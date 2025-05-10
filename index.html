@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+
+        .schedule-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background: white;
+            min-width: 1200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            min-width: 120px;
+        }
+
+        thead th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .time-header {
+            white-space: nowrap;
+        }
+
+        .day-label {
+            background: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+            width: 120px;
+        }
+
+        .course-cell {
+            vertical-align: top;
+            background: white;
+            line-height: 1.4;
+        }
+
+        .course-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            font-size: 0.9em;
+        }
+
+        .course-code {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .instructor {
+            color: #666;
+        }
+
+        .room {
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+
+        .break-cell {
+            background: #ffeaa7;
+            font-weight: 600;
+            color: #e67e22;
+            border: none !important;
+            padding: 1.5rem;
+        }
+
+        .empty-cell {
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 5px,
+                    #f1f2f6 5px,
+                    #f1f2f6 10px);
+        }
+        .alt{
+            background-color: #cce5ff ;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="schedule-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Days/Time</th>
+                    <th>
+                        <div class="time-header">8:00 - 8:50</div>
+                    </th>
+                    <th>
+                        <div class="time-header">8:50 - 9:40</div>
+                    </th>
+                    <th>
+                        <div class="time-header">9:40 - 10:30</div>
+                    </th>
+                    <th>
+                        <div class="time-header">10:50 - 11:40</div>
+                    </th>
+                    <th>
+                        <div class="time-header">11:40 - 12:30</div>
+                    </th>
+                    <th>
+                        <div class="time-header">12:30 - 1:20</div>
+                    </th>
+                    <th>
+                        <div class="time-header">1:20 - 2:30</div>
+                    </th>
+                    <th>
+                        <div class="time-header">2:30 - 3:20</div>
+                    </th>
+                    <th>
+                        <div class="time-header">3:20 - 4:10</div>
+                    </th>
+                    <th>
+                        <div class="time-header">4:10 - 5:00</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Saturday -->
+                <tr>
+                    <td class="day-label">Saturday</td>
+                    
+                    <td class="empty-cell"></td>
+
+                    <td class="empty-cell"></td>
+
+                    <td class="empty-cell"></td>
+
+
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">EEE 1251</span>
+                            <span class="instructor">AKS</span>
+                            <span class="room">Room 103</span>
+                        </div>
+                    </td>
+
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Phy 1213</span>
+                            <span class="instructor">MNZ</span>
+                            <span class="room">Room 103</span>
+                        </div>
+                    </td>
+
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Math 1213</span>
+                            <span class="instructor">MSA</span>
+                            <span class="room">Room 103</span>
+                        </div>
+                    </td>
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell alt" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1204</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">SW Lab</span>
+                        </div>
+                    </td>
+
+                 
+                </tr>
+
+                <!-- Sunday -->
+                <tr>
+                    <td class="day-label">Sunday</td>
+                    <td class="course-cell alt" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1202</span>
+                            <span class="instructor">EKH</span>
+                            <span class="room">SW Lab</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Math 1213</span>
+                            <span class="instructor">MSA</span>
+                            <span class="room">Room 202</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">EEE 1251</span>
+                            <span class="instructor">AKS</span>
+                            <span class="room">Room 202</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Phy 1213</span>
+                            <span class="instructor">AAM</span>
+                            <span class="room">Room 202</span>
+                        </div>
+                    </td>
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1204</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">ACL Lab</span>
+                        </div>
+                    </td>               
+                </tr>
+
+                <!-- Monday -->
+                <tr>
+                    <td class="day-label">Monday</td>
+                    <td class="course-cell" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">Phy 1213</span>
+                            <span class="instructor">AKZ+MNZ</span>
+                            <span class="room">Physics Lab</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1203</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">Room 101</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1203</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">Room 101</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1201</span>
+                            <span class="instructor">EKH</span>
+                            <span class="room">Room 101</span>
+                        </div>
+                    </td>
+
+                    <td class="break-cell">B R E A K</td>
+
+                    
+                    <td class="course-cell alt" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1200</span>
+                            <span class="instructor">MIT/FAR</span>
+                            <span class="room">NW Lab</span>
+                        </div>
+                    </td>
+                   
+                </tr>
+
+                <!-- Tuesday -->
+                <tr>
+                    <td class="day-label">Tuesday</td>
+
+                    <td class="course-cell alt" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1202</span>
+                            <span class="instructor">EKH</span>
+                            <span class="room">SW Lab</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1201</span>
+                            <span class="instructor">EKH</span>
+                            <span class="room">Room 203</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Math 1113</span>
+                            <span class="instructor">NEW</span>
+                            <span class="room">Room 203</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1203</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">Room 203</span>
+                        </div>
+                    </td>
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">EEE 1252</span>
+                            <span class="instructor">SK</span>
+                            <span class="room">Electronics West</span>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Wednesday -->
+                <tr>
+                    <td class="day-label">Wednesday</td>
+                    <td class="course-cell" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">EEE 1252</span>
+                            <span class="instructor">SK</span>
+                            <span class="room">Electronics West</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1201</span>
+                            <span class="instructor">EKH</span>
+                            <span class="room">Room 201</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">EEE 1251</span>
+                            <span class="instructor">AKS</span>
+                            <span class="room">Room 201</span>
+                        </div>
+                    </td>
+                    <td class="course-cell">
+                        <div class="course-info">
+                            <span class="course-code">Phy 1213</span>
+                            <span class="instructor">AAM</span>
+                            <span class="room">Room 201</span>
+                        </div>
+                    </td>
+                    <td class="break-cell">B R E A K</td>
+                    <td class="empty-cell"></td>
+                    <td class="empty-cell"></td>
+                    <td class="empty-cell"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
