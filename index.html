@@ -103,8 +103,79 @@
                     #f1f2f6 5px,
                     #f1f2f6 10px);
         }
-        .alt{
-            background-color: #cce5ff ;
+
+        .alt {
+            background-color: #cce5ff;
+        }
+
+        /* Toggle Styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem;
+            justify-content: flex-end;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85em;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            /* Ultra-compact width */
+            height: 20px;
+            /* Reduced height */
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 10px;
+            /* Matches reduced height */
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            /* Tiny slider button */
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(14px);
+            /* Adjusted movement */
+        }
+
+        body.alt-theme .alt {
+            background-color: #fff !important;
+        }
+
+        body.alt-theme .alt2 {
+            background-color: #cce5ff !important;
         }
     </style>
 </head>
@@ -151,12 +222,17 @@
                 <!-- Saturday -->
                 <tr>
                     <td class="day-label">Saturday</td>
-                    
-                    <td class="empty-cell"></td>
 
-                    <td class="empty-cell"></td>
+                    <td class="course-cell" colspan="3">
+                        <div class="course-info">
+                            <span class="course-code">CSE 1204</span>
+                            <span class="instructor">SUZ</span>
+                            <span class="room">ACL Lab</span>
+                        </div>
+                    </td>
 
-                    <td class="empty-cell"></td>
+
+
 
 
                     <td class="course-cell">
@@ -184,25 +260,22 @@
                     </td>
                     <td class="break-cell">B R E A K</td>
 
-                    <td class="course-cell alt" colspan="3">
-                        <div class="course-info">
-                            <span class="course-code">CSE 1204</span>
-                            <span class="instructor">SUZ</span>
-                            <span class="room">SW Lab</span>
-                        </div>
-                    </td>
+                    <td class="empty-cell"></td>
 
-                 
+                    <td class="empty-cell"></td>
+
+                    <td class="empty-cell"></td>
+
                 </tr>
 
                 <!-- Sunday -->
                 <tr>
                     <td class="day-label">Sunday</td>
-                    <td class="course-cell alt" colspan="3">
+                    <td class="course-cell" colspan="3">
                         <div class="course-info">
                             <span class="course-code">CSE 1202</span>
                             <span class="instructor">EKH</span>
-                            <span class="room">SW Lab</span>
+                            <span class="room">ACL Lab</span>
                         </div>
                     </td>
                     <td class="course-cell">
@@ -228,21 +301,21 @@
                     </td>
                     <td class="break-cell">B R E A K</td>
 
-                    <td class="course-cell" colspan="3">
+                    <td class="course-cell alt alt2" colspan="3">
                         <div class="course-info">
                             <span class="course-code">CSE 1204</span>
                             <span class="instructor">SUZ</span>
                             <span class="room">ACL Lab</span>
                         </div>
-                    </td>               
+                    </td>
                 </tr>
 
                 <!-- Monday -->
                 <tr>
                     <td class="day-label">Monday</td>
-                    <td class="course-cell" colspan="3">
+                    <td class="course-cell alt" colspan="3">
                         <div class="course-info">
-                            <span class="course-code">Phy 1213</span>
+                            <span class="course-code">Phy 1214</span>
                             <span class="instructor">AKZ+MNZ</span>
                             <span class="room">Physics Lab</span>
                         </div>
@@ -271,26 +344,26 @@
 
                     <td class="break-cell">B R E A K</td>
 
-                    
-                    <td class="course-cell alt" colspan="3">
+
+                    <td class="course-cell alt2" colspan="3">
                         <div class="course-info">
                             <span class="course-code">CSE 1200</span>
                             <span class="instructor">MIT/FAR</span>
-                            <span class="room">NW Lab</span>
+                            <span class="room">ACL Lab</span>
                         </div>
                     </td>
-                   
+
                 </tr>
 
                 <!-- Tuesday -->
                 <tr>
                     <td class="day-label">Tuesday</td>
 
-                    <td class="course-cell alt" colspan="3">
+                    <td class="course-cell alt alt2" colspan="3">
                         <div class="course-info">
                             <span class="course-code">CSE 1202</span>
                             <span class="instructor">EKH</span>
-                            <span class="room">SW Lab</span>
+                            <span class="room">PG Lab</span>
                         </div>
                     </td>
                     <td class="course-cell">
@@ -320,7 +393,7 @@
                         <div class="course-info">
                             <span class="course-code">EEE 1252</span>
                             <span class="instructor">SK</span>
-                            <span class="room">Electronics West</span>
+                            <span class="room">Electronics Lab West</span>
                         </div>
                     </td>
                 </tr>
@@ -328,11 +401,11 @@
                 <!-- Wednesday -->
                 <tr>
                     <td class="day-label">Wednesday</td>
-                    <td class="course-cell" colspan="3">
+                    <td class="course-cell alt alt2" colspan="3">
                         <div class="course-info">
                             <span class="course-code">EEE 1252</span>
                             <span class="instructor">SK</span>
-                            <span class="room">Electronics West</span>
+                            <span class="room">Electronics Lab West</span>
                         </div>
                     </td>
                     <td class="course-cell">
@@ -363,7 +436,26 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Toggle Button Container -->
+        <div class="toggle-container">
+            <label class="theme-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+            </label>
+            <span>Next Week</span>
+        </div>
+
+
+
+
     </div>
+
+    <script>
+        document.getElementById('themeToggle').addEventListener('change', function () {
+            document.body.classList.toggle('alt-theme');
+        });
+    </script>
 </body>
 
 </html>
