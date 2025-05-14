@@ -108,13 +108,17 @@
             background-color: #cce5ff;
         }
 
+        .note{
+            font-style: italic;
+        }
+
         /* Toggle Styles */
         .toggle-container {
             display: flex;
             align-items: center;
             gap: 6px;
             padding: 0.3rem;
-            justify-content: flex-end;
+            justify-content: space-between;
             background: white;
             border-top: 1px solid var(--border-color);
             font-size: 0.85em;
@@ -439,15 +443,15 @@
 
         <!-- Toggle Button Container -->
         <div class="toggle-container">
-            <label class="theme-switch">
-                <input type="checkbox" id="themeToggle">
-                <span class="slider"></span>
-            </label>
-            <span>Next Week</span>
+            <span class="note">The white cell represents the second 30, and the light blue cell represents the first 30!</span>
+            <span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+                <span>Next Week</span>
+            </span>
         </div>
-
-
-
 
     </div>
 
