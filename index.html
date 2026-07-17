@@ -106,6 +106,13 @@
             gap: 4px;
         }
 
+        .course-code {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+        }
+
         .course-name {
             color: var(--text);
             font-size: 0.9rem;
@@ -224,7 +231,7 @@
             color: #6d28d9;
         }
 
-        /* Technical Writing Lab */
+        /* Technical Writing Sessional */
 
         .technical-writing-lab {
             background: #fce7f3;
@@ -239,7 +246,41 @@
             color: #be185d;
         }
 
-        /* Bottom week switch */
+        /* Parallel Wednesday labs */
+
+        .combined-labs {
+            padding: 8px;
+            background: #f8fafc;
+        }
+
+        .parallel-lab-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 92px;
+        }
+
+        .parallel-lab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px;
+        }
+
+        .parallel-lab + .parallel-lab {
+            border-left: 1px solid var(--border);
+        }
+
+        .parallel-lab.micro {
+            background: #ede9fe;
+        }
+
+        .parallel-lab.algorithm {
+            background: #dcfce7;
+        }
+
+        /* Bottom CT-week switch */
 
         .toggle-container {
             display: flex;
@@ -324,73 +365,22 @@
 
             <thead>
                 <tr>
-                    <th class="day-column">
-                        Days/Time
-                    </th>
+                    <th class="day-column">Days/Time</th>
 
                     <th class="ct-column">
-                        <div class="time-header">
-                            8:00–8:50
-                        </div>
-
-                        <span class="header-label">
-                            CT Time
-                        </span>
+                        <div class="time-header">8:00–8:50</div>
+                        <span class="header-label">CT Time</span>
                     </th>
 
-                    <th>
-                        <div class="time-header">
-                            8:50–9:40
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            9:40–10:30
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            10:30–10:50
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            10:50–11:40
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            11:40–12:30
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            12:30–1:20
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            1:20–2:30
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            2:30–3:20
-                        </div>
-                    </th>
-
-                    <th>
-                        <div class="time-header">
-                            3:20–4:00
-                        </div>
-                    </th>
+                    <th><div class="time-header">8:50–9:40</div></th>
+                    <th><div class="time-header">9:40–10:30</div></th>
+                    <th><div class="time-header">10:30–10:50</div></th>
+                    <th><div class="time-header">10:50–11:40</div></th>
+                    <th><div class="time-header">11:40–12:30</div></th>
+                    <th><div class="time-header">12:30–1:20</div></th>
+                    <th><div class="time-header">1:20–2:30</div></th>
+                    <th><div class="time-header">2:30–3:20</div></th>
+                    <th><div class="time-header">3:20–4:00</div></th>
                 </tr>
             </thead>
 
@@ -399,319 +389,196 @@
                 <!-- Saturday -->
 
                 <tr>
-                    <td class="day-label">
-                        Saturday
-                    </td>
+                    <td class="day-label">Saturday</td>
 
-                    <td
-                        class="course-cell ct-slot"
-                        id="ct-saturday"
-                    ></td>
+                    <td class="course-cell ct-slot" id="ct-saturday"></td>
 
                     <td class="empty-cell"></td>
                     <td class="empty-cell"></td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
-                    <td
-                        class="course-cell"
-                        colspan="2"
-                    >
+                    <td class="empty-cell"></td>
+                    <td class="empty-cell"></td>
+                    <td class="empty-cell"></td>
+
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell microprocessor-lab" colspan="2">
                         <div class="course-info">
-
+                            <span class="course-code">CSE 2206</span>
                             <span class="course-name">
-                                Numerical Methods
+                                Microprocessors &amp; Microcontrollers Lab
                             </span>
-
-                            <span class="instructor">
-                                AYS
-                            </span>
-
-                            <span class="room">
-                                202
-                            </span>
-
+                            <span class="instructor">MSH</span>
+                            <span class="room">SW LAB</span>
                         </div>
                     </td>
-
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
-
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
                 </tr>
 
                 <!-- Sunday -->
 
                 <tr>
-                    <td class="day-label">
-                        Sunday
-                    </td>
+                    <td class="day-label">Sunday</td>
 
-                    <td
-                        class="course-cell ct-slot"
-                        id="ct-sunday"
-                    ></td>
+                    <td class="course-cell ct-slot" id="ct-sunday"></td>
 
                     <td class="empty-cell"></td>
                     <td class="empty-cell"></td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
-                            <span class="course-name">
-                                Microprocessor
-                            </span>
-
-                            <span class="instructor">
-                                MSH
-                            </span>
-
-                            <span class="room">
-                                101
-                            </span>
-
+                            <span class="course-code">MATH 2213</span>
+                            <span class="course-name">Mathematics</span>
+                            <span class="instructor">MBH</span>
+                            <span class="room">101</span>
                         </div>
                     </td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
+                            <span class="course-code">HUM 2213</span>
                             <span class="course-name">
-                                Mathematics
+                                Industrial Management &amp; Accountancy
                             </span>
-
-                            <span class="instructor">
-                                MBH
-                            </span>
-
-                            <span class="room">
-                                101
-                            </span>
-
+                            <span class="instructor">ABS</span>
+                            <span class="room">101</span>
                         </div>
                     </td>
 
-                    <td class="course-cell">
+                    <td class="empty-cell"></td>
+
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell numerical-lab" colspan="2">
                         <div class="course-info">
-
-                            <span class="course-name">
-                                Humanities
-                            </span>
-
-                            <span class="instructor">
-                                ABS
-                            </span>
-
-                            <span class="room">
-                                101
-                            </span>
-
+                            <span class="course-code">CSE 2204</span>
+                            <span class="course-name">Numerical Methods Lab</span>
+                            <span class="instructor">SA / AYS</span>
+                            <span class="room">NW LAB</span>
                         </div>
                     </td>
-
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
-
-                    <td
-                        class="course-cell"
-                        colspan="2"
-                        id="numericalLabCell"
-                    ></td>
                 </tr>
 
                 <!-- Monday -->
 
                 <tr>
-                    <td class="day-label">
-                        Monday
-                    </td>
+                    <td class="day-label">Monday</td>
 
-                    <td
-                        class="course-cell ct-slot"
-                        id="ct-monday"
-                    ></td>
+                    <td class="course-cell ct-slot" id="ct-monday"></td>
 
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
-
-                    <td
-                        class="course-cell"
-                        colspan="2"
-                    >
+                    <td class="course-cell">
                         <div class="course-info">
+                            <span class="course-code">CSE 2205</span>
+                            <span class="course-name">
+                                Microprocessors &amp; Microcontrollers
+                            </span>
+                            <span class="instructor">MSH</span>
+                            <span class="room">101</span>
+                        </div>
+                    </td>
 
+                    <td class="empty-cell"></td>
+
+                    <td class="break-cell">B R E A K</td>
+
+                    <td class="course-cell" colspan="2">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2201</span>
                             <span class="course-name">
                                 Algorithm Analysis &amp; Design
                             </span>
-
-                            <span class="instructor">
-                                MIT
-                            </span>
-
-                            <span class="room">
-                                SEMINAR
-                            </span>
-
+                            <span class="instructor">MIT</span>
+                            <span class="room">SEMINAR</span>
                         </div>
                     </td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
-                            <span class="course-name">
-                                Numerical Methods
-                            </span>
-
-                            <span class="instructor">
-                                SA / AYS
-                            </span>
-
-                            <span class="room">
-                                SEMINAR
-                            </span>
-
+                            <span class="course-code">CSE 2203</span>
+                            <span class="course-name">Numerical Methods</span>
+                            <span class="instructor">SA / AYS</span>
+                            <span class="room">SEMINAR</span>
                         </div>
                     </td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
-                    <td
-                        class="course-cell"
-                        colspan="2"
-                        id="algorithmLabCell"
-                    ></td>
+                    <td class="course-cell algorithm-lab" colspan="2">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2202</span>
+                            <span class="course-name">
+                                Algorithm Analysis &amp; Design Lab
+                            </span>
+                            <span class="instructor">MIT</span>
+                            <span class="room">ACL LAB</span>
+                        </div>
+                    </td>
                 </tr>
 
                 <!-- Tuesday -->
 
                 <tr>
-                    <td class="day-label">
-                        Tuesday
-                    </td>
+                    <td class="day-label">Tuesday</td>
 
-                    <td
-                        class="course-cell ct-slot"
-                        id="ct-tuesday"
-                    ></td>
+                    <td class="course-cell ct-slot" id="ct-tuesday"></td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
+                            <span class="course-code">CSE 2201</span>
                             <span class="course-name">
                                 Algorithm Analysis &amp; Design
                             </span>
-
-                            <span class="instructor">
-                                MIT
-                            </span>
-
-                            <span class="room">
-                                203
-                            </span>
-
+                            <span class="instructor">MIT</span>
+                            <span class="room">203</span>
                         </div>
                     </td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
+                            <span class="course-code">HUM 2213</span>
                             <span class="course-name">
-                                Humanities
+                                Industrial Management &amp; Accountancy
                             </span>
-
-                            <span class="instructor">
-                                ABS
-                            </span>
-
-                            <span class="room">
-                                203
-                            </span>
-
+                            <span class="instructor">ABS</span>
+                            <span class="room">203</span>
                         </div>
                     </td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
-                            <span class="course-name">
-                                Mathematics
-                            </span>
-
-                            <span class="instructor">
-                                MRK
-                            </span>
-
-                            <span class="room">
-                                203
-                            </span>
-
+                            <span class="course-code">MATH 2213</span>
+                            <span class="course-name">Mathematics</span>
+                            <span class="instructor">MRK</span>
+                            <span class="room">203</span>
                         </div>
                     </td>
 
-                    <td
-                        class="course-cell"
-                        colspan="2"
-                    >
+                    <td class="course-cell" colspan="2">
                         <div class="course-info">
-
+                            <span class="course-code">CSE 2205</span>
                             <span class="course-name">
-                                Microprocessor
+                                Microprocessors &amp; Microcontrollers
                             </span>
-
-                            <span class="instructor">
-                                MSH
-                            </span>
-
-                            <span class="room">
-                                203
-                            </span>
-
+                            <span class="instructor">MSH</span>
+                            <span class="room">203</span>
                         </div>
                     </td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
-                    <td
-                        class="course-cell technical-writing-lab"
-                        colspan="2"
-                    >
+                    <td class="course-cell technical-writing-lab" colspan="2">
                         <div class="course-info">
-
+                            <span class="course-code">CSE 2200</span>
                             <span class="course-name">
-                                Technical Writing &amp; Presentation Lab
+                                Technical Writing &amp; Presentation Sessional
                             </span>
-
-                            <span class="instructor">
-                                NIM / NOS
-                            </span>
-
-                            <span class="room">
-                                101
-                            </span>
-
+                            <span class="instructor">NIM / NOS</span>
+                            <span class="room">101</span>
                         </div>
                     </td>
                 </tr>
@@ -719,82 +586,66 @@
                 <!-- Wednesday -->
 
                 <tr>
-                    <td class="day-label">
-                        Wednesday
-                    </td>
+                    <td class="day-label">Wednesday</td>
 
-                    <td
-                        class="course-cell ct-slot"
-                        id="ct-wednesday"
-                    ></td>
+                    <td class="course-cell ct-slot" id="ct-wednesday"></td>
 
                     <td class="course-cell">
                         <div class="course-info">
-
+                            <span class="course-code">HUM 2213</span>
                             <span class="course-name">
-                                Humanities
+                                Industrial Management &amp; Accountancy
                             </span>
-
-                            <span class="instructor">
-                                SI
-                            </span>
-
-                            <span class="room">
-                                SEMINAR
-                            </span>
-
+                            <span class="instructor">SI</span>
+                            <span class="room">SEMINAR</span>
                         </div>
                     </td>
 
                     <td class="course-cell">
                         <div class="course-info">
+                            <span class="course-code">MATH 2213</span>
+                            <span class="course-name">Mathematics</span>
+                            <span class="instructor">MRK</span>
+                            <span class="room">SEMINAR</span>
+                        </div>
+                    </td>
 
-                            <span class="course-name">
-                                Mathematics
-                            </span>
+                    <td class="break-cell">B R E A K</td>
 
-                            <span class="instructor">
-                                MRK
-                            </span>
+                    <td class="course-cell combined-labs" colspan="3">
+                        <div class="parallel-lab-grid">
 
-                            <span class="room">
-                                SEMINAR
-                            </span>
+                            <div class="parallel-lab micro">
+                                <span class="course-code">CSE 2206</span>
+                                <span class="course-name">
+                                    Microprocessors &amp; Microcontrollers Lab
+                                </span>
+                                <span class="instructor">MSH</span>
+                                <span class="room">ACL LAB</span>
+                            </div>
+
+                            <div class="parallel-lab algorithm">
+                                <span class="course-code">CSE 2202</span>
+                                <span class="course-name">
+                                    Algorithm Analysis &amp; Design Lab
+                                </span>
+                                <span class="instructor">MIT</span>
+                                <span class="room">SW LAB</span>
+                            </div>
 
                         </div>
                     </td>
 
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
+                    <td class="break-cell">B R E A K</td>
 
-                    <td
-                        class="course-cell microprocessor-lab"
-                        colspan="3"
-                    >
+                    <td class="course-cell" colspan="2">
                         <div class="course-info">
-
-                            <span class="course-name">
-                                Microprocessor Lab
-                            </span>
-
-                            <span class="instructor">
-                                MSH
-                            </span>
-
-                            <span class="room">
-                                ACL LAB
-                            </span>
-
+                            <span class="course-code">CSE 2203</span>
+                            <span class="course-name">Numerical Methods</span>
+                            <span class="instructor">SA</span>
+                            <span class="room">202</span>
                         </div>
                     </td>
-
-                    <td class="break-cell">
-                        B R E A K
-                    </td>
-
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
                 </tr>
 
             </tbody>
@@ -803,29 +654,18 @@
 
         <div class="toggle-container">
 
-            <span
-                class="week-status"
-                id="weekStatus"
-            >
-                Current Week
+            <span class="week-status" id="weekStatus">
+                Current CT Week
             </span>
 
             <div class="week-control">
 
                 <label class="week-switch">
-
-                    <input
-                        type="checkbox"
-                        id="weekToggle"
-                    >
-
+                    <input type="checkbox" id="weekToggle">
                     <span class="slider"></span>
-
                 </label>
 
-                <span>
-                    Next Week
-                </span>
+                <span>Next CT Week</span>
 
             </div>
 
@@ -842,12 +682,6 @@
         const weekStatus =
             document.getElementById("weekStatus");
 
-        const numericalLabCell =
-            document.getElementById("numericalLabCell");
-
-        const algorithmLabCell =
-            document.getElementById("algorithmLabCell");
-
         const ctCells = {
             saturday: document.getElementById("ct-saturday"),
             sunday: document.getElementById("ct-sunday"),
@@ -857,64 +691,20 @@
         };
 
         /*
-         * Current-week CT routine:
-         * Saturday: Microprocessor
-         * Monday: Numerical Methods
-         * Wednesday: Algorithm
+         * CT information is separate from the official class routine.
+         * Update these two objects whenever your CT schedule changes.
          */
 
         const currentWeekCT = {
-            saturday: "Microprocessor",
+            saturday: "Microprocessors & Microcontrollers",
             monday: "Numerical Methods",
-            wednesday: "Algorithm"
+            wednesday: "Algorithm Analysis & Design"
         };
-
-        /*
-         * Next-week CT routine:
-         * Sunday: Humanities
-         * Tuesday: Mathematics
-         */
 
         const nextWeekCT = {
-            sunday: "Humanities",
+            sunday: "Industrial Management & Accountancy",
             tuesday: "Mathematics"
         };
-
-        const algorithmLabHTML = `
-            <div class="course-info">
-
-                <span class="course-name">
-                    Algorithm Lab
-                </span>
-
-                <span class="instructor">
-                    MIT
-                </span>
-
-                <span class="room">
-                    ACL LAB
-                </span>
-
-            </div>
-        `;
-
-        const numericalLabHTML = `
-            <div class="course-info">
-
-                <span class="course-name">
-                    Numerical Methods Lab
-                </span>
-
-                <span class="instructor">
-                    SA / AYS
-                </span>
-
-                <span class="room">
-                    NW LAB
-                </span>
-
-            </div>
-        `;
 
         function clearCTCells() {
             Object.values(ctCells).forEach(function (cell) {
@@ -937,7 +727,6 @@
 
                     cell.innerHTML = `
                         <div class="course-info">
-
                             <span class="course-name">
                                 ${course} CT
                             </span>
@@ -945,7 +734,6 @@
                             <span class="ct-label">
                                 CT
                             </span>
-
                         </div>
                     `;
                 }
@@ -954,38 +742,12 @@
 
         function displayCurrentWeek() {
             displayCTRoutine(currentWeekCT);
-
-            algorithmLabCell.className =
-                "course-cell algorithm-lab";
-
-            algorithmLabCell.innerHTML =
-                algorithmLabHTML;
-
-            numericalLabCell.className =
-                "course-cell empty-cell";
-
-            numericalLabCell.innerHTML = "";
-
-            weekStatus.textContent =
-                "Current Week";
+            weekStatus.textContent = "Current CT Week";
         }
 
         function displayNextWeek() {
             displayCTRoutine(nextWeekCT);
-
-            numericalLabCell.className =
-                "course-cell numerical-lab";
-
-            numericalLabCell.innerHTML =
-                numericalLabHTML;
-
-            algorithmLabCell.className =
-                "course-cell empty-cell";
-
-            algorithmLabCell.innerHTML = "";
-
-            weekStatus.textContent =
-                "Next Week";
+            weekStatus.textContent = "Next CT Week";
         }
 
         weekToggle.addEventListener(
