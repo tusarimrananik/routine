@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { auth, authConfigured, signIn } from "@/auth";
 
 export default async function LoginPage() {
+  if (!authConfigured) redirect("/");
+
   if (authConfigured) {
     const session = await auth();
     if (session?.user) redirect("/");
