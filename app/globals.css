@@ -56,6 +56,7 @@ button, input { font: inherit; }
 
 .sign-out-button { color: white; background: transparent; border-color: #475569; }
 .sign-out-button:hover { background: #334155; }
+.demo-badge { padding: 4px 8px; color: #bbf7d0; background: #14532d; border: 1px solid #166534; border-radius: 999px; font-size: .65rem; font-weight: 800; }
 
 .schedule-container {
   width: 100%;
@@ -167,6 +168,7 @@ thead .current-day-column { background: #d97706; }
   .user-name { font-size: .68rem; }
   .user-email { font-size: .58rem; }
   .sign-out-button { padding: 3px 6px; font-size: .62rem; }
+  .demo-badge { padding: 3px 6px; font-size: .58rem; }
   .schedule-container { min-width: 0; border-radius: 0; }
   .toggle-container { min-height: 28px; padding: 3px 7px; }
   .week-status, .week-control { font-size: .65rem; line-height: 1; }
