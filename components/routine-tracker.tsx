@@ -9,6 +9,7 @@ import {
   AttendanceSummary,
   AttendanceStatus,
   SessionType,
+  SubjectAttendance,
 } from "@/lib/attendance";
 
 type Day = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday";
@@ -241,6 +242,32 @@ function demoSummary(records: AttendanceRecord[]): AttendanceSummary {
   };
 }
 
+function demoSubjectAttendance(records: AttendanceRecord[]): SubjectAttendance {
+  const now = getDhakaNow();
+  const counts: Record<string, { present: number; total: number }> = {};
+
+  records.forEach((record) => {
+    const started =
+      record.attendanceDate < now.date ||
+      (record.attendanceDate === now.date && record.startTime <= now.time);
+
+    if (!started || record.sessionType !== "regular") return;
+    counts[record.courseCode] ||= { present: 0, total: 0 };
+    counts[record.courseCode].total += 1;
+    if (record.status === "present") counts[record.courseCode].present += 1;
+  });
+
+  return Object.fromEntries(
+    Object.entries(counts).map(([courseCode, count]) => [
+      courseCode,
+      {
+        ...count,
+        percentage: count.total ? Math.round((count.present / count.total) * 100) : 0,
+      },
+    ]),
+  );
+}
+
 function readDemoRecords() {
   try {
     return JSON.parse(window.localStorage.getItem(DEMO_STORAGE_KEY) || "{}") as Record<string, AttendanceRecord>;
@@ -254,6 +281,7 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
   const [selectedWeek, setSelectedWeek] = useState(currentWeekValue);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
   const [summary, setSummary] = useState<AttendanceSummary>(EMPTY_SUMMARY);
+  const [subjectAttendance, setSubjectAttendance] = useState<SubjectAttendance>({});
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [showSummary, setShowSummary] = useState(false);
@@ -289,13 +317,14 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
     timeZone: "Asia/Dhaka",
   }).format(new Date(clock)).toLowerCase() : "";
 
-  const applyResponse = useCallback((data: { records: AttendanceRecord[]; summary: AttendanceSummary }) => {
+  const applyResponse = useCallback((data: { records: AttendanceRecord[]; summary: AttendanceSummary; subjectAttendance?: SubjectAttendance }) => {
     const nextRecords: Record<string, AttendanceStatus> = {};
     data.records.forEach((record) => {
       nextRecords[attendanceKey(record)] = record.status;
     });
     setRecords(nextRecords);
     setSummary(data.summary);
+    setSubjectAttendance(data.subjectAttendance || {});
   }, []);
 
   const applyDemoRecords = useCallback((stored: Record<string, AttendanceRecord>) => {
@@ -305,6 +334,7 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
         (record) => record.attendanceDate >= range.from && record.attendanceDate <= range.to,
       ),
       summary: demoSummary(allRecords),
+      subjectAttendance: demoSubjectAttendance(allRecords),
     });
   }, [applyResponse, range]);
 
@@ -501,6 +531,13 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
                         <div className="course-info">
                           <span className="course-code">{session.courseCode}</span>
                           <span className="course-name">{session.courseName}</span>
+                          {session.sessionType === "regular" ? (
+                            <span className="subject-attendance">
+                              Attendance: {subjectAttendance[session.courseCode]?.total
+                                ? `${subjectAttendance[session.courseCode].percentage}%`
+                                : "—"}
+                            </span>
+                          ) : null}
                           {session.sessionType === "ct" ? <span className="ct-label">CT</span> : null}
                           {session.evenWeekOnly ? <span className="ct-label">Even Week · Every 2 Weeks</span> : null}
                           {session.instructor ? <span className="instructor">{session.instructor}</span> : null}
