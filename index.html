@@ -216,6 +216,22 @@
             color: #b45309;
         }
 
+        .numerical-lab.lab-hidden {
+            background:
+                repeating-linear-gradient(
+                    45deg,
+                    #ffffff,
+                    #ffffff 6px,
+                    #f1f5f9 6px,
+                    #f1f5f9 12px
+                );
+            box-shadow: none;
+        }
+
+        .numerical-lab.lab-hidden .course-info {
+            visibility: hidden;
+        }
+
         /* Microprocessor Lab */
 
         .microprocessor-lab {
@@ -445,7 +461,11 @@
 
                     <td class="break-cell">B R E A K</td>
 
-                    <td class="course-cell numerical-lab" colspan="2">
+                    <td
+                        class="course-cell numerical-lab"
+                        id="numericalLabSunday"
+                        colspan="2"
+                    >
                         <div class="course-info">
                             <span class="course-code">CSE 2204</span>
                             <span class="course-name">Numerical Methods Lab</span>
@@ -671,6 +691,21 @@
             wednesday: document.getElementById("ct-wednesday")
         };
 
+        const numericalLabSunday =
+            document.getElementById("numericalLabSunday");
+
+        function setEvenWeekLabVisibility(isVisible) {
+            numericalLabSunday.classList.toggle(
+                "lab-hidden",
+                !isVisible
+            );
+
+            numericalLabSunday.setAttribute(
+                "aria-hidden",
+                String(!isVisible)
+            );
+        }
+
         /*
          * CT information is separate from the official class routine.
          * Update these two objects whenever your CT schedule changes.
@@ -723,11 +758,13 @@
 
         function displayCurrentWeek() {
             displayCTRoutine(currentWeekCT);
+            setEvenWeekLabVisibility(true);
             weekStatus.textContent = "Current CT Week";
         }
 
         function displayNextWeek() {
             displayCTRoutine(nextWeekCT);
+            setEvenWeekLabVisibility(false);
             weekStatus.textContent = "Next CT Week";
         }
 
