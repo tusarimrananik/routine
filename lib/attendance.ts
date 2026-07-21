@@ -25,6 +25,8 @@ export type AttendanceSummary = {
   ct: AttendanceStat;
 };
 
+export type SubjectAttendance = Record<string, AttendanceStat>;
+
 export function attendanceKey(
   record: Pick<
     AttendanceInput,
