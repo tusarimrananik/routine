@@ -7,6 +7,7 @@ import {
   AttendanceRecord,
   AttendanceStat,
   AttendanceSummary,
+  SubjectAttendance,
 } from "@/lib/attendance";
 import { db, ensureSchema } from "@/lib/db";
 
@@ -77,7 +78,7 @@ function toStat(present: number, total: number): AttendanceStat {
 }
 
 async function getAttendanceData(userEmail: string, from: string, to: string) {
-  const [recordsResult, summaryResult] = await Promise.all([
+  const [recordsResult, summaryResult, subjectResult] = await Promise.all([
     db.execute({
       sql: `
         SELECT
@@ -110,6 +111,26 @@ async function getAttendanceData(userEmail: string, from: string, to: string) {
               OR (attendance_date = ? AND start_time <= ?)
             )
           GROUP BY session_type
+        `,
+        args: [userEmail, now.date, now.date, now.time],
+      });
+    })(),
+    (() => {
+      const now = getDhakaNow();
+      return db.execute({
+        sql: `
+          SELECT
+            course_code,
+            COUNT(*) AS total,
+            SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS present
+          FROM attendance
+          WHERE user_email = ?
+            AND session_type = 'regular'
+            AND (
+              attendance_date < ?
+              OR (attendance_date = ? AND start_time <= ?)
+            )
+          GROUP BY course_code
         `,
         args: [userEmail, now.date, now.date, now.time],
       });
@@ -147,7 +168,14 @@ async function getAttendanceData(userEmail: string, from: string, to: string) {
     overall: toStat(regular.present + ct.present, regular.total + ct.total),
   };
 
-  return { records, summary };
+  const subjectAttendance: SubjectAttendance = {};
+  for (const row of subjectResult.rows) {
+    const present = Number(row.present || 0);
+    const total = Number(row.total || 0);
+    subjectAttendance[String(row.course_code)] = toStat(present, total);
+  }
+
+  return { records, summary, subjectAttendance };
 }
 
 export async function GET(request: NextRequest) {
