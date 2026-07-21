@@ -1,0 +1,206 @@
+:root {
+  --primary: #202938;
+  --secondary: #3498db;
+  --page-bg: #f4f6f8;
+  --surface: #ffffff;
+  --border: #d9dee7;
+  --text: #202938;
+  --muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: light; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--text);
+  background: var(--page-bg);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button, input { font: inherit; }
+
+.app-shell {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.user-bar {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px;
+  color: white;
+  background: #111827;
+}
+
+.user-copy { display: flex; min-width: 0; flex-direction: column; }
+.user-name { font-size: .78rem; font-weight: 800; }
+.user-email { overflow: hidden; color: #cbd5e1; font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
+
+.sign-out-button,
+.summary-button {
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.sign-out-button { color: white; background: transparent; border-color: #475569; }
+.sign-out-button:hover { background: #334155; }
+
+.schedule-container {
+  width: 100%;
+  min-width: 880px;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 0 20px rgba(15, 23, 42, .1);
+}
+
+.toggle-container,
+.attendance-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.toggle-container { min-height: 38px; padding: 6px 12px; }
+.week-status { color: var(--muted); font-size: .78rem; font-weight: 700; }
+.week-control { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; }
+
+.week-switch { position: relative; display: inline-block; width: 42px; height: 23px; }
+.week-switch input { width: 0; height: 0; opacity: 0; }
+.slider { position: absolute; inset: 0; cursor: pointer; background: #b8bec5; border-radius: 20px; transition: .25s; }
+.slider::before { position: absolute; content: ""; width: 17px; height: 17px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .25s; }
+input:checked + .slider { background: var(--secondary); }
+input:checked + .slider::before { transform: translateX(19px); }
+
+.attendance-panel { min-height: 38px; padding: 6px 12px; color: var(--muted); font-size: .76rem; font-weight: 700; background: #f8fafc; }
+.attendance-copy { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.attendance-summary { color: var(--text); }
+.attendance-help { font-weight: 600; }
+.summary-button { flex: 0 0 auto; color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+.summary-button:hover { background: #dbeafe; }
+.save-error { color: #b91c1c; }
+
+.table-scroll { width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+table { width: 100%; min-width: 880px; table-layout: fixed; border-collapse: collapse; }
+th, td { padding: 9px 6px; text-align: center; border: 1px solid var(--border); }
+thead th { position: sticky; top: 0; z-index: 3; color: white; background: var(--primary); font-size: .8rem; font-weight: 700; }
+.time-column { width: 150px; }
+thead .time-column { left: 0; z-index: 5; }
+.time-label { position: sticky; left: 0; z-index: 2; color: white; background: var(--secondary); font-weight: 700; white-space: nowrap; }
+.class-slot-row { height: 70px; }
+.break-row { height: 34px; }
+.current-day-column { border-left: 3px solid #f59e0b !important; border-right: 3px solid #f59e0b !important; }
+thead .current-day-column { background: #d97706; }
+
+.course-cell { position: relative; vertical-align: middle; background: white; cursor: pointer; transition: background .15s ease, box-shadow .15s ease; }
+.course-info { display: flex; min-height: 40px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.course-code { color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .025em; }
+.course-name { color: var(--text); font-size: .8rem; font-weight: 700; line-height: 1.2; }
+.instructor { color: #475569; font-size: .72rem; font-weight: 600; }
+.room { color: var(--secondary); font-size: .7rem; font-style: italic; font-weight: 700; }
+.empty-cell { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #f1f5f9 6px, #f1f5f9 12px); }
+.break-cell { padding: 5px; color: #a16207; background: #fff3cd; font-size: .68rem; font-weight: 800; letter-spacing: 1px; }
+
+.ct-active { background: #fff1f2; box-shadow: inset 0 0 0 2px #fb7185; }
+.ct-label { display: inline-flex; align-items: center; justify-content: center; padding: 2px 7px; color: white; background: #be123c; border-radius: 999px; font-size: .62rem; font-weight: 800; }
+.algorithm-lab { background: #dcfce7; box-shadow: inset 0 0 0 2px #4ade80; }
+.numerical-lab { background: #fef3c7; box-shadow: inset 0 0 0 2px #fbbf24; }
+.microprocessor-lab { background: #ede9fe; box-shadow: inset 0 0 0 2px #a78bfa; }
+.technical-writing-lab { background: #fce7f3; box-shadow: inset 0 0 0 2px #f472b6; }
+
+.attendance-cell::after { position: absolute; content: "A"; top: 3px; right: 3px; display: grid; width: 18px; height: 18px; place-items: center; color: #b91c1c; background: #fee2e2; border-radius: 50%; font-size: .62rem; font-weight: 900; }
+.attendance-cell.attendance-absent { background: #fff7f7 !important; box-shadow: inset 0 0 0 2px #fecaca; }
+.attendance-cell.attendance-present { background: #ecfdf5 !important; box-shadow: inset 0 0 0 2px #86efac; }
+.attendance-cell.attendance-present::after { content: "✓"; color: #166534; background: #bbf7d0; }
+.attendance-cell[data-session-type="ct"]::after { box-shadow: 0 0 0 2px #fecdd3; }
+.attendance-cell:focus-visible { outline: 3px solid #2563eb; outline-offset: -3px; }
+.saving-dot { position: absolute; left: 5px; bottom: 5px; width: 7px; height: 7px; background: #2563eb; border-radius: 50%; animation: pulse .7s infinite alternate; }
+@keyframes pulse { to { opacity: .25; } }
+
+.modal-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(15, 23, 42, .58); }
+.summary-modal { width: min(520px, 100%); padding: 18px; background: white; border-radius: 12px; box-shadow: 0 24px 70px rgba(15, 23, 42, .3); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.modal-eyebrow { margin: 0 0 3px; color: var(--secondary); font-size: .68rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.modal-header h2 { margin: 0; font-size: 1.25rem; }
+.modal-close { width: 32px; height: 32px; color: var(--muted); background: #f1f5f9; border: 0; border-radius: 50%; cursor: pointer; font-size: 1.3rem; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+.stat-card { display: flex; min-height: 118px; flex-direction: column; justify-content: center; padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
+.stat-card span { color: var(--muted); font-size: .7rem; font-weight: 800; }
+.stat-card strong { margin: 4px 0; color: #166534; font-size: 1.65rem; }
+.stat-card small { color: var(--muted); font-size: .65rem; }
+.stat-overall { background: #eff6ff; border-color: #bfdbfe; }
+.stat-overall strong { color: #1d4ed8; }
+.stat-ct { background: #fff1f2; border-color: #fecdd3; }
+.stat-ct strong { color: #be123c; }
+.summary-note { margin: 14px 0 0; color: var(--muted); font-size: .7rem; }
+
+.login-page { display: grid; min-height: 100vh; place-items: center; padding: 20px; background: radial-gradient(circle at top, #dbeafe, transparent 45%), var(--page-bg); }
+.login-card { width: min(390px, 100%); padding: 30px; text-align: center; background: white; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 24px 70px rgba(15, 23, 42, .14); }
+.login-mark { display: grid; width: 52px; height: 52px; margin: 0 auto 16px; place-items: center; color: white; background: var(--primary); border-radius: 12px; font-weight: 900; }
+.login-eyebrow { margin: 0 0 5px; color: var(--secondary); font-size: .72rem; font-weight: 900; text-transform: uppercase; }
+.login-card h1 { margin: 0; font-size: 1.65rem; }
+.login-description { margin: 10px 0 22px; color: var(--muted); font-size: .86rem; line-height: 1.5; }
+.google-button { display: flex; width: 100%; align-items: center; justify-content: center; gap: 10px; padding: 11px 14px; color: white; background: #1f2937; border: 0; border-radius: 7px; cursor: pointer; font-weight: 800; }
+.google-button:hover { background: #111827; }
+.google-letter { display: grid; width: 22px; height: 22px; place-items: center; color: #1f2937; background: white; border-radius: 50%; font-weight: 900; }
+
+@media (max-width: 768px) {
+  body { padding: 0; }
+  .app-shell { max-width: none; }
+  .user-bar { min-height: 36px; padding: 4px 7px; }
+  .user-name { font-size: .68rem; }
+  .user-email { font-size: .58rem; }
+  .sign-out-button { padding: 3px 6px; font-size: .62rem; }
+  .schedule-container { min-width: 0; border-radius: 0; }
+  .toggle-container { min-height: 28px; padding: 3px 7px; }
+  .week-status, .week-control { font-size: .65rem; line-height: 1; }
+  .week-control { gap: 5px; }
+  .week-switch { width: 34px; height: 18px; }
+  .slider::before { width: 12px; height: 12px; left: 3px; bottom: 3px; }
+  input:checked + .slider::before { transform: translateX(16px); }
+  .attendance-panel { min-height: 30px; gap: 5px; padding: 3px 6px; font-size: .6rem; }
+  .attendance-copy { gap: 5px; }
+  .attendance-help { display: none; }
+  .summary-button { padding: 3px 5px; font-size: .58rem; }
+  table { min-width: 650px; }
+  th, td { padding: 4px 3px; }
+  thead th { font-size: .68rem; }
+  .time-column { width: 86px; }
+  .time-label { font-size: .62rem; }
+  .class-slot-row { height: 52px; }
+  .break-row { height: 20px; }
+  .break-cell { padding: 1px 2px; font-size: .54rem; letter-spacing: .5px; }
+  .course-info { min-height: 32px; gap: 1px; }
+  .course-code { font-size: .56rem; }
+  .course-name { font-size: .66rem; line-height: 1.1; }
+  .instructor { font-size: .58rem; line-height: 1.1; }
+  .room { font-size: .57rem; }
+  .ct-label { padding: 1px 4px; font-size: .54rem; }
+  .attendance-cell::after { top: 2px; right: 2px; width: 14px; height: 14px; font-size: .5rem; }
+  .current-day-column { border-left-width: 2px !important; border-right-width: 2px !important; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .stat-card { min-height: 84px; }
+}
+
+@media (max-width: 420px) {
+  table { min-width: 620px; }
+  .time-column { width: 80px; }
+  .time-label { font-size: .58rem; }
+  .attendance-summary { display: none; }
+  .login-card { padding: 24px 18px; }
+}
