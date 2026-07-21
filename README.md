@@ -42,3 +42,5 @@ In Google Cloud Console, add the production callback:
 Use a Turso database URL in production. A local SQLite file is not durable on Vercel serverless functions.
 
 The database table and index are created automatically on the first authenticated attendance request.
+
+The app can be deployed before these variables are added. It will show a setup-pending login screen until Auth.js is configured. The `/tmp` database fallback is temporary and non-durable; configure Turso before recording real attendance.

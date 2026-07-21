@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 
-import { auth, signOut } from "@/auth";
+import { auth, authConfigured, signOut } from "@/auth";
 import { RoutineTracker } from "@/components/routine-tracker";
 
 export default async function HomePage() {
+  if (!authConfigured) redirect("/login");
+
   const session = await auth();
 
   if (!session?.user?.email) redirect("/login");

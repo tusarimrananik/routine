@@ -1,10 +1,6 @@
 import { createClient } from "@libsql/client";
 
-const databaseUrl = process.env.TURSO_DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("TURSO_DATABASE_URL is not configured.");
-}
+const databaseUrl = process.env.TURSO_DATABASE_URL || "file:/tmp/routine.db";
 
 export const db = createClient({
   url: databaseUrl,

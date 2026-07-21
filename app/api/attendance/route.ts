@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Session } from "next-auth";
 
-import { auth } from "@/auth";
+import { auth, authConfigured } from "@/auth";
 import {
   AttendanceInput,
   AttendanceRecord,
@@ -151,6 +151,10 @@ async function getAttendanceData(userEmail: string, from: string, to: string) {
 }
 
 export async function GET(request: NextRequest) {
+  if (!authConfigured) {
+    return NextResponse.json({ error: "Authentication is not configured" }, { status: 503 });
+  }
+
   const session = await auth();
   const userEmail = getUserEmail(session);
 
@@ -170,6 +174,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!authConfigured) {
+    return NextResponse.json({ error: "Authentication is not configured" }, { status: 503 });
+  }
+
   const session = await auth();
   const userEmail = getUserEmail(session);
 

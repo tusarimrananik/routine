@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { auth, signIn } from "@/auth";
+import { auth, authConfigured, signIn } from "@/auth";
 
 export default async function LoginPage() {
-  const session = await auth();
-  if (session?.user) redirect("/");
+  if (authConfigured) {
+    const session = await auth();
+    if (session?.user) redirect("/");
+  }
 
   return (
     <main className="login-page">
@@ -16,17 +18,23 @@ export default async function LoginPage() {
           Sign in to keep your class and CT attendance safely synced across devices.
         </p>
 
-        <form
-          action={async () => {
-            "use server";
-            await signIn("google", { redirectTo: "/" });
-          }}
-        >
-          <button className="google-button" type="submit">
-            <span className="google-letter">G</span>
-            Continue with Google
-          </button>
-        </form>
+        {authConfigured ? (
+          <form
+            action={async () => {
+              "use server";
+              await signIn("google", { redirectTo: "/" });
+            }}
+          >
+            <button className="google-button" type="submit">
+              <span className="google-letter">G</span>
+              Continue with Google
+            </button>
+          </form>
+        ) : (
+          <div className="setup-notice">
+            Deployment ready · Login setup pending
+          </div>
+        )}
       </section>
     </main>
   );

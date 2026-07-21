@@ -158,6 +158,7 @@ thead .current-day-column { background: #d97706; }
 .google-button { display: flex; width: 100%; align-items: center; justify-content: center; gap: 10px; padding: 11px 14px; color: white; background: #1f2937; border: 0; border-radius: 7px; cursor: pointer; font-weight: 800; }
 .google-button:hover { background: #111827; }
 .google-letter { display: grid; width: 22px; height: 22px; place-items: center; color: #1f2937; background: white; border-radius: 50%; font-weight: 900; }
+.setup-notice { padding: 11px 14px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; font-size: .78rem; font-weight: 800; }
 
 @media (max-width: 768px) {
   body { padding: 0; }
