@@ -37,8 +37,8 @@
 
         .schedule-container {
             width: 100%;
-            min-width: 1350px;
-            max-width: 1550px;
+            min-width: 980px;
+            max-width: 1200px;
             margin: 0 auto;
             overflow: hidden;
             background: var(--surface);
@@ -92,20 +92,32 @@
             font-weight: 700;
         }
 
-        .current-day-row > td {
-            border-top: 3px solid #f59e0b;
-            border-bottom: 3px solid #f59e0b;
+        .time-column {
+            width: 150px;
         }
 
-        .current-day-row > td:first-child {
+        .time-label {
+            color: white;
+            background: var(--secondary);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .class-slot-row {
+            height: 88px;
+        }
+
+        .break-row {
+            height: 44px;
+        }
+
+        .current-day-column {
             border-left: 3px solid #f59e0b;
-        }
-
-        .current-day-row > td:last-child {
             border-right: 3px solid #f59e0b;
         }
 
-        .current-day-row > .day-label {
+        thead .current-day-column {
+            color: white;
             background: #d97706;
         }
 
@@ -398,65 +410,126 @@
 
             <thead>
                 <tr>
-                    <th class="day-column">Days/Time</th>
-
-                    <th class="ct-column">
-                        <div class="time-header">8:00–8:50</div>
-                        <span class="header-label">CT Time</span>
-                    </th>
-
-                    <th><div class="time-header">8:50–9:40</div></th>
-                    <th><div class="time-header">9:40–10:30</div></th>
-                    <th><div class="time-header">10:30–10:50</div></th>
-                    <th><div class="time-header">10:50–11:40</div></th>
-                    <th><div class="time-header">11:40–12:30</div></th>
-                    <th><div class="time-header">12:30–1:20</div></th>
-                    <th><div class="time-header">1:20–2:30</div></th>
-                    <th><div class="time-header">2:30–3:20</div></th>
-                    <th><div class="time-header">3:20–4:00</div></th>
+                    <th class="time-column">Time</th>
+                    <th data-day="saturday">Saturday</th>
+                    <th data-day="sunday">Sunday</th>
+                    <th data-day="monday">Monday</th>
+                    <th data-day="tuesday">Tuesday</th>
+                    <th data-day="wednesday">Wednesday</th>
                 </tr>
             </thead>
 
             <tbody>
 
-                <!-- Saturday -->
+                <tr class="class-slot-row">
+                    <td class="time-label">8:00–8:50</td>
+                    <td class="course-cell ct-slot" id="ct-saturday" data-day="saturday"></td>
+                    <td class="course-cell ct-slot" id="ct-sunday" data-day="sunday"></td>
+                    <td class="course-cell ct-slot" id="ct-monday" data-day="monday"></td>
+                    <td class="course-cell ct-slot" id="ct-tuesday" data-day="tuesday"></td>
+                    <td class="course-cell ct-slot" id="ct-wednesday" data-day="wednesday"></td>
+                </tr>
 
-                <tr data-day="saturday">
-                    <td class="day-label">Saturday</td>
-
-                    <td class="course-cell ct-slot" id="ct-saturday"></td>
-
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell empty-cell" colspan="2">
-                        <div class="course-info" aria-hidden="true"></div>
+                <tr class="class-slot-row">
+                    <td class="time-label">8:50–9:40</td>
+                    <td class="empty-cell" data-day="saturday"></td>
+                    <td class="empty-cell" data-day="sunday"></td>
+                    <td class="course-cell" data-day="monday">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2205</span>
+                            <span class="course-name">Microprocessors</span>
+                            <span class="instructor">Md. Sozib Hossain</span>
+                            <span class="room">101</span>
+                        </div>
+                    </td>
+                    <td class="course-cell" data-day="tuesday">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2201</span>
+                            <span class="course-name">Algorithm</span>
+                            <span class="instructor">Md. Mazharul Islam Tushar</span>
+                            <span class="room">203</span>
+                        </div>
+                    </td>
+                    <td class="course-cell" data-day="wednesday">
+                        <div class="course-info">
+                            <span class="course-code">HUM 2213</span>
+                            <span class="course-name">Humanities</span>
+                            <span class="instructor">Shoaib Islam</span>
+                            <span class="room">SEMINAR</span>
+                        </div>
                     </td>
                 </tr>
 
-                <!-- Sunday -->
+                <tr class="class-slot-row">
+                    <td class="time-label">9:40–10:30</td>
+                    <td class="empty-cell" data-day="saturday"></td>
+                    <td class="empty-cell" data-day="sunday"></td>
+                    <td class="empty-cell" data-day="monday"></td>
+                    <td class="course-cell" data-day="tuesday">
+                        <div class="course-info">
+                            <span class="course-code">HUM 2213</span>
+                            <span class="course-name">Humanities</span>
+                            <span class="instructor">Md. Abu Bokar Siddique</span>
+                            <span class="room">203</span>
+                        </div>
+                    </td>
+                    <td class="course-cell" data-day="wednesday">
+                        <div class="course-info">
+                            <span class="course-code">MATH 2213</span>
+                            <span class="course-name">Mathematics</span>
+                            <span class="instructor">Mst. Rupale Khatun</span>
+                            <span class="room">SEMINAR</span>
+                        </div>
+                    </td>
+                </tr>
 
-                <tr data-day="sunday">
-                    <td class="day-label">Sunday</td>
+                <tr class="break-row">
+                    <td class="time-label">10:30–10:50</td>
+                    <td class="break-cell" data-day="saturday">BREAK</td>
+                    <td class="break-cell" data-day="sunday">BREAK</td>
+                    <td class="break-cell" data-day="monday">BREAK</td>
+                    <td class="break-cell" data-day="tuesday">BREAK</td>
+                    <td class="break-cell" data-day="wednesday">BREAK</td>
+                </tr>
 
-                    <td class="course-cell ct-slot" id="ct-sunday"></td>
+                <tr class="class-slot-row">
+                    <td class="time-label">10:50–11:40</td>
+                    <td class="empty-cell" data-day="saturday"></td>
+                    <td class="empty-cell" data-day="sunday"></td>
+                    <td class="course-cell" data-day="monday" rowspan="2">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2201</span>
+                            <span class="course-name">Algorithm</span>
+                            <span class="instructor">Md. Mazharul Islam Tushar</span>
+                            <span class="room">SEMINAR</span>
+                        </div>
+                    </td>
+                    <td class="course-cell" data-day="tuesday">
+                        <div class="course-info">
+                            <span class="course-code">MATH 2213</span>
+                            <span class="course-name">Mathematics</span>
+                            <span class="instructor">Mst. Rupale Khatun</span>
+                            <span class="room">203</span>
+                        </div>
+                    </td>
+                    <td
+                        class="course-cell microprocessor-lab"
+                        data-day="wednesday"
+                        rowspan="3"
+                    >
+                        <div class="course-info">
+                            <span class="course-code">CSE 2206</span>
+                            <span class="course-name">Microprocessors Lab</span>
+                            <span class="instructor">Md. Sozib Hossain</span>
+                            <span class="room">ACL LAB</span>
+                        </div>
+                    </td>
+                </tr>
 
-                    <td class="empty-cell"></td>
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="empty-cell"></td>
-
-                    <td class="course-cell">
+                <tr class="class-slot-row">
+                    <td class="time-label">11:40–12:30</td>
+                    <td class="empty-cell" data-day="saturday"></td>
+                    <td class="course-cell" data-day="sunday">
                         <div class="course-info">
                             <span class="course-code">MATH 2213</span>
                             <span class="course-name">Mathematics</span>
@@ -464,24 +537,56 @@
                             <span class="room">101</span>
                         </div>
                     </td>
+                    <td class="course-cell" data-day="tuesday" rowspan="2">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2205</span>
+                            <span class="course-name">Microprocessors</span>
+                            <span class="instructor">Md. Sozib Hossain</span>
+                            <span class="room">203</span>
+                        </div>
+                    </td>
+                </tr>
 
-                    <td class="course-cell">
+                <tr class="class-slot-row">
+                    <td class="time-label">12:30–1:20</td>
+                    <td class="empty-cell" data-day="saturday"></td>
+                    <td class="course-cell" data-day="sunday">
                         <div class="course-info">
                             <span class="course-code">HUM 2213</span>
-                            <span class="course-name">
-                                Humanities
-                            </span>
+                            <span class="course-name">Humanities</span>
                             <span class="instructor">Md. Abu Bokar Siddique</span>
                             <span class="room">101</span>
                         </div>
                     </td>
+                    <td class="course-cell" data-day="monday">
+                        <div class="course-info">
+                            <span class="course-code">CSE 2203</span>
+                            <span class="course-name">Numerical Methods</span>
+                            <span class="instructor">Shyla Afroge / Md. Azmain Yakin Srizon</span>
+                            <span class="room">SEMINAR</span>
+                        </div>
+                    </td>
+                </tr>
 
-                    <td class="break-cell">B R E A K</td>
+                <tr class="break-row">
+                    <td class="time-label">1:20–2:30</td>
+                    <td class="break-cell" data-day="saturday">BREAK</td>
+                    <td class="break-cell" data-day="sunday">BREAK</td>
+                    <td class="break-cell" data-day="monday">BREAK</td>
+                    <td class="break-cell" data-day="tuesday">BREAK</td>
+                    <td class="break-cell" data-day="wednesday">BREAK</td>
+                </tr>
 
+                <tr class="class-slot-row">
+                    <td class="time-label">2:30–3:20</td>
+                    <td class="course-cell empty-cell" data-day="saturday" rowspan="2">
+                        <div class="course-info" aria-hidden="true"></div>
+                    </td>
                     <td
                         class="course-cell numerical-lab"
                         id="numericalLabSunday"
-                        colspan="2"
+                        data-day="sunday"
+                        rowspan="2"
                     >
                         <div class="course-info">
                             <span class="course-code">CSE 2204</span>
@@ -491,172 +596,26 @@
                             <span class="room">NW LAB</span>
                         </div>
                     </td>
-                </tr>
-
-                <!-- Monday -->
-
-                <tr data-day="monday">
-                    <td class="day-label">Monday</td>
-
-                    <td class="course-cell ct-slot" id="ct-monday"></td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2205</span>
-                            <span class="course-name">
-                                Microprocessors
-                            </span>
-                            <span class="instructor">Md. Sozib Hossain</span>
-                            <span class="room">101</span>
-                        </div>
-                    </td>
-
-                    <td class="empty-cell"></td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell" colspan="2">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2201</span>
-                            <span class="course-name">
-                                Algorithm
-                            </span>
-                            <span class="instructor">Md. Mazharul Islam Tushar</span>
-                            <span class="room">SEMINAR</span>
-                        </div>
-                    </td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2203</span>
-                            <span class="course-name">Numerical Methods</span>
-                            <span class="instructor">Shyla Afroge / Md. Azmain Yakin Srizon</span>
-                            <span class="room">SEMINAR</span>
-                        </div>
-                    </td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell algorithm-lab" colspan="2">
+                    <td class="course-cell algorithm-lab" data-day="monday" rowspan="2">
                         <div class="course-info">
                             <span class="course-code">CSE 2202</span>
-                            <span class="course-name">
-                                Algorithm Lab
-                            </span>
+                            <span class="course-name">Algorithm Lab</span>
                             <span class="instructor">Md. Mazharul Islam Tushar</span>
                             <span class="room">ACL LAB</span>
                         </div>
                     </td>
-                </tr>
-
-                <!-- Tuesday -->
-
-                <tr data-day="tuesday">
-                    <td class="day-label">Tuesday</td>
-
-                    <td class="course-cell ct-slot" id="ct-tuesday"></td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2201</span>
-                            <span class="course-name">
-                                Algorithm
-                            </span>
-                            <span class="instructor">Md. Mazharul Islam Tushar</span>
-                            <span class="room">203</span>
-                        </div>
-                    </td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">HUM 2213</span>
-                            <span class="course-name">
-                                Humanities
-                            </span>
-                            <span class="instructor">Md. Abu Bokar Siddique</span>
-                            <span class="room">203</span>
-                        </div>
-                    </td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">MATH 2213</span>
-                            <span class="course-name">Mathematics</span>
-                            <span class="instructor">Mst. Rupale Khatun</span>
-                            <span class="room">203</span>
-                        </div>
-                    </td>
-
-                    <td class="course-cell" colspan="2">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2205</span>
-                            <span class="course-name">
-                                Microprocessors
-                            </span>
-                            <span class="instructor">Md. Sozib Hossain</span>
-                            <span class="room">203</span>
-                        </div>
-                    </td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell technical-writing-lab" colspan="2">
+                    <td class="course-cell technical-writing-lab" data-day="tuesday" rowspan="2">
                         <div class="course-info">
                             <span class="course-code">CSE 2200</span>
-                            <span class="course-name">
-                                Technical Writing Lab
+                            <span class="course-name">Technical Writing Lab</span>
+                            <span class="instructor">
+                                Prof. Dr. Md. Nazrul Islam Mondal /
+                                Md. Nasif Osman Khansur
                             </span>
-                            <span class="instructor">Prof. Dr. Md. Nazrul Islam Mondal / Md. Nasif Osman Khansur</span>
                             <span class="room">101</span>
                         </div>
                     </td>
-                </tr>
-
-                <!-- Wednesday -->
-
-                <tr data-day="wednesday">
-                    <td class="day-label">Wednesday</td>
-
-                    <td class="course-cell ct-slot" id="ct-wednesday"></td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">HUM 2213</span>
-                            <span class="course-name">
-                                Humanities
-                            </span>
-                            <span class="instructor">Shoaib Islam</span>
-                            <span class="room">SEMINAR</span>
-                        </div>
-                    </td>
-
-                    <td class="course-cell">
-                        <div class="course-info">
-                            <span class="course-code">MATH 2213</span>
-                            <span class="course-name">Mathematics</span>
-                            <span class="instructor">Mst. Rupale Khatun</span>
-                            <span class="room">SEMINAR</span>
-                        </div>
-                    </td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell microprocessor-lab" colspan="3">
-                        <div class="course-info">
-                            <span class="course-code">CSE 2206</span>
-                            <span class="course-name">
-                                Microprocessors Lab
-                            </span>
-                            <span class="instructor">Md. Sozib Hossain</span>
-                            <span class="room">ACL LAB</span>
-                        </div>
-                    </td>
-
-                    <td class="break-cell">B R E A K</td>
-
-                    <td class="course-cell" colspan="2">
+                    <td class="course-cell" data-day="wednesday" rowspan="2">
                         <div class="course-info">
                             <span class="course-code">CSE 2203</span>
                             <span class="course-name">Numerical Methods</span>
@@ -664,6 +623,10 @@
                             <span class="room">203</span>
                         </div>
                     </td>
+                </tr>
+
+                <tr class="class-slot-row">
+                    <td class="time-label">3:20–4:00</td>
                 </tr>
 
             </tbody>
@@ -699,9 +662,9 @@
 
         function highlightCurrentDay() {
             document
-                .querySelectorAll(".current-day-row")
-                .forEach(function (row) {
-                    row.classList.remove("current-day-row");
+                .querySelectorAll(".current-day-column")
+                .forEach(function (cell) {
+                    cell.classList.remove("current-day-column");
                 });
 
             const currentDay = new Intl.DateTimeFormat(
@@ -714,13 +677,11 @@
                 .format(new Date())
                 .toLowerCase();
 
-            const currentRow = document.querySelector(
-                `[data-day="${currentDay}"]`
-            );
-
-            if (currentRow) {
-                currentRow.classList.add("current-day-row");
-            }
+            document
+                .querySelectorAll(`[data-day="${currentDay}"]`)
+                .forEach(function (cell) {
+                    cell.classList.add("current-day-column");
+                });
         }
 
         const weekStatus =
