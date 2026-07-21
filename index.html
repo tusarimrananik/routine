@@ -92,6 +92,23 @@
             font-weight: 700;
         }
 
+        .current-day-row > td {
+            border-top: 3px solid #f59e0b;
+            border-bottom: 3px solid #f59e0b;
+        }
+
+        .current-day-row > td:first-child {
+            border-left: 3px solid #f59e0b;
+        }
+
+        .current-day-row > td:last-child {
+            border-right: 3px solid #f59e0b;
+        }
+
+        .current-day-row > .day-label {
+            background: #d97706;
+        }
+
         .course-cell {
             vertical-align: middle;
             background: white;
@@ -404,7 +421,7 @@
 
                 <!-- Saturday -->
 
-                <tr>
+                <tr data-day="saturday">
                     <td class="day-label">Saturday</td>
 
                     <td class="course-cell ct-slot" id="ct-saturday"></td>
@@ -427,7 +444,7 @@
 
                 <!-- Sunday -->
 
-                <tr>
+                <tr data-day="sunday">
                     <td class="day-label">Sunday</td>
 
                     <td class="course-cell ct-slot" id="ct-sunday"></td>
@@ -478,7 +495,7 @@
 
                 <!-- Monday -->
 
-                <tr>
+                <tr data-day="monday">
                     <td class="day-label">Monday</td>
 
                     <td class="course-cell ct-slot" id="ct-monday"></td>
@@ -534,7 +551,7 @@
 
                 <!-- Tuesday -->
 
-                <tr>
+                <tr data-day="tuesday">
                     <td class="day-label">Tuesday</td>
 
                     <td class="course-cell ct-slot" id="ct-tuesday"></td>
@@ -599,7 +616,7 @@
 
                 <!-- Wednesday -->
 
-                <tr>
+                <tr data-day="wednesday">
                     <td class="day-label">Wednesday</td>
 
                     <td class="course-cell ct-slot" id="ct-wednesday"></td>
@@ -679,6 +696,32 @@
 
         const weekToggle =
             document.getElementById("weekToggle");
+
+        function highlightCurrentDay() {
+            document
+                .querySelectorAll(".current-day-row")
+                .forEach(function (row) {
+                    row.classList.remove("current-day-row");
+                });
+
+            const currentDay = new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    weekday: "long",
+                    timeZone: "Asia/Dhaka"
+                }
+            )
+                .format(new Date())
+                .toLowerCase();
+
+            const currentRow = document.querySelector(
+                `[data-day="${currentDay}"]`
+            );
+
+            if (currentRow) {
+                currentRow.classList.add("current-day-row");
+            }
+        }
 
         const weekStatus =
             document.getElementById("weekStatus");
@@ -774,7 +817,10 @@
                 if (this.checked) {
                     displayNextWeek();
                 } else {
-                    displayCurrentWeek();
+                    highlightCurrentDay();
+        displayCurrentWeek();
+
+        window.setInterval(highlightCurrentDay, 60000);
                 }
             }
         );
