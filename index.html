@@ -37,8 +37,8 @@
 
         .schedule-container {
             width: 100%;
-            min-width: 980px;
-            max-width: 1200px;
+            min-width: 880px;
+            max-width: 1080px;
             margin: 0 auto;
             overflow: hidden;
             background: var(--surface);
@@ -54,7 +54,7 @@
 
         th,
         td {
-            padding: 14px 8px;
+            padding: 9px 6px;
             text-align: center;
             border: 1px solid var(--border);
         }
@@ -62,7 +62,7 @@
         thead th {
             color: white;
             background: var(--primary);
-            font-size: 0.86rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
@@ -104,11 +104,11 @@
         }
 
         .class-slot-row {
-            height: 88px;
+            height: 70px;
         }
 
         .break-row {
-            height: 44px;
+            height: 34px;
         }
 
         .current-day-column {
@@ -128,36 +128,36 @@
 
         .course-info {
             display: flex;
-            min-height: 52px;
+            min-height: 40px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 2px;
         }
 
         .course-code {
             color: var(--muted);
-            font-size: 0.72rem;
+            font-size: 0.66rem;
             font-weight: 800;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.025em;
         }
 
         .course-name {
             color: var(--text);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 700;
             line-height: 1.25;
         }
 
         .instructor {
             color: #475569;
-            font-size: 0.82rem;
+            font-size: 0.72rem;
             font-weight: 600;
         }
 
         .room {
             color: var(--secondary);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-style: italic;
             font-weight: 700;
         }
@@ -334,7 +334,7 @@
             gap: 12px;
             padding: 10px 16px;
             background: white;
-            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .week-status {
@@ -405,6 +405,25 @@
 <body>
 
     <main class="schedule-container">
+
+        <div class="toggle-container">
+
+            <span class="week-status" id="weekStatus">
+                Current CT Week
+            </span>
+
+            <div class="week-control">
+
+                <label class="week-switch">
+                    <input type="checkbox" id="weekToggle">
+                    <span class="slider"></span>
+                </label>
+
+                <span>Next CT Week</span>
+
+            </div>
+
+        </div>
 
         <table>
 
@@ -633,24 +652,7 @@
 
         </table>
 
-        <div class="toggle-container">
 
-            <span class="week-status" id="weekStatus">
-                Current CT Week
-            </span>
-
-            <div class="week-control">
-
-                <label class="week-switch">
-                    <input type="checkbox" id="weekToggle">
-                    <span class="slider"></span>
-                </label>
-
-                <span>Next CT Week</span>
-
-            </div>
-
-        </div>
 
     </main>
 
