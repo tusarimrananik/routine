@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { auth, authConfigured, signOut } from "@/auth";
 import { RoutineTracker } from "@/components/routine-tracker";
@@ -26,20 +27,23 @@ export default async function HomePage() {
           <span className="user-email">{user.email}</span>
         </div>
 
-        {authConfigured ? (
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/login" });
-            }}
-          >
-            <button className="sign-out-button" type="submit">
-              Sign out
-            </button>
-          </form>
-        ) : (
-          <span className="demo-badge">Demo mode</span>
-        )}
+        <div className="user-actions">
+          <Link className="analytics-link" href="/analytics">Analytics</Link>
+          {authConfigured ? (
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/login" });
+              }}
+            >
+              <button className="sign-out-button" type="submit">
+                Sign out
+              </button>
+            </form>
+          ) : (
+            <span className="demo-badge">Demo mode</span>
+          )}
+        </div>
       </div>
 
       <RoutineTracker demoMode={!authConfigured} />
