@@ -780,15 +780,17 @@
                 if (this.checked) {
                     displayNextWeek();
                 } else {
-                    highlightCurrentDay();
-        displayCurrentWeek();
-
-        window.setInterval(highlightCurrentDay, 60000);
+                    displayCurrentWeek();
                 }
+
+                highlightCurrentDay();
             }
         );
 
         displayCurrentWeek();
+        highlightCurrentDay();
+
+        window.setInterval(highlightCurrentDay, 60000);
     </script>
 
 </body>
