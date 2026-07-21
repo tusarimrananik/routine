@@ -97,6 +97,8 @@ const EMPTY_SUMMARY: AttendanceSummary = {
   ct: { present: 0, total: 0, percentage: 0 },
 };
 
+const DEMO_STORAGE_KEY = "routine-demo-attendance-v1";
+
 function getDhakaToday() {
   const values: Record<string, number> = {};
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -147,7 +149,69 @@ function percentageLabel(stat: AttendanceSummary["overall"]) {
   return stat.total ? `${stat.percentage}%` : "—";
 }
 
-export function RoutineTracker() {
+function getDhakaNow() {
+  const values: Record<string, string> = {};
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Asia/Dhaka",
+  }).formatToParts(new Date());
+
+  parts.forEach((part) => {
+    if (part.type !== "literal") values[part.type] = part.value;
+  });
+
+  return {
+    date: `${values.year}-${values.month}-${values.day}`,
+    time: `${values.hour}:${values.minute}`,
+  };
+}
+
+function demoSummary(records: AttendanceRecord[]): AttendanceSummary {
+  const now = getDhakaNow();
+  const counts = {
+    regular: { present: 0, total: 0 },
+    ct: { present: 0, total: 0 },
+  };
+
+  records.forEach((record) => {
+    const started =
+      record.attendanceDate < now.date ||
+      (record.attendanceDate === now.date && record.startTime <= now.time);
+
+    if (!started) return;
+    counts[record.sessionType].total += 1;
+    if (record.status === "present") counts[record.sessionType].present += 1;
+  });
+
+  const toStat = (present: number, total: number) => ({
+    present,
+    total,
+    percentage: total ? Math.round((present / total) * 100) : 0,
+  });
+  const regular = toStat(counts.regular.present, counts.regular.total);
+  const ct = toStat(counts.ct.present, counts.ct.total);
+
+  return {
+    regular,
+    ct,
+    overall: toStat(regular.present + ct.present, regular.total + ct.total),
+  };
+}
+
+function readDemoRecords() {
+  try {
+    return JSON.parse(window.localStorage.getItem(DEMO_STORAGE_KEY) || "{}") as Record<string, AttendanceRecord>;
+  } catch {
+    return {} as Record<string, AttendanceRecord>;
+  }
+}
+
+export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
   const [nextWeek, setNextWeek] = useState(false);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
   const [summary, setSummary] = useState<AttendanceSummary>(EMPTY_SUMMARY);
@@ -192,6 +256,16 @@ export function RoutineTracker() {
     setSummary(data.summary);
   }, []);
 
+  const applyDemoRecords = useCallback((stored: Record<string, AttendanceRecord>) => {
+    const allRecords = Object.values(stored);
+    applyResponse({
+      records: allRecords.filter(
+        (record) => record.attendanceDate >= range.from && record.attendanceDate <= range.to,
+      ),
+      summary: demoSummary(allRecords),
+    });
+  }, [applyResponse, range]);
+
   useEffect(() => {
     const interval = window.setInterval(() => setClock(Date.now()), 60000);
     return () => window.clearInterval(interval);
@@ -201,6 +275,21 @@ export function RoutineTracker() {
     let cancelled = false;
     setLoading(true);
     setError("");
+
+    if (demoMode) {
+      const stored = readDemoRecords();
+
+      sessions.forEach((session) => {
+        const record = toInput(session, "absent") as AttendanceRecord;
+        const key = attendanceKey(record);
+        if (!stored[key]) stored[key] = record;
+      });
+
+      window.localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(stored));
+      applyDemoRecords(stored);
+      setLoading(false);
+      return;
+    }
 
     fetch("/api/attendance", {
       method: "POST",
@@ -228,7 +317,7 @@ export function RoutineTracker() {
     return () => {
       cancelled = true;
     };
-  }, [applyResponse, range, sessions]);
+  }, [applyDemoRecords, applyResponse, demoMode, range, sessions]);
 
   async function toggleAttendance(session: DatedSession) {
     const key = attendanceKey(toInput(session));
@@ -238,6 +327,15 @@ export function RoutineTracker() {
     setSavingKey(key);
     setError("");
     setRecords((current) => ({ ...current, [key]: status }));
+
+    if (demoMode) {
+      const stored = readDemoRecords();
+      stored[key] = toInput(session, status) as AttendanceRecord;
+      window.localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(stored));
+      applyDemoRecords(stored);
+      setSavingKey(null);
+      return;
+    }
 
     try {
       const response = await fetch("/api/attendance", {
