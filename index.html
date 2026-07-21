@@ -412,6 +412,114 @@
             transform: translateX(19px);
         }
 
+        /* Attendance tracker */
+
+        .attendance-panel {
+            display: flex;
+            min-height: 38px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 6px 12px;
+            color: var(--muted);
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+
+        .attendance-copy {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .attendance-summary {
+            color: var(--text);
+        }
+
+        .attendance-help {
+            font-weight: 600;
+        }
+
+        .clear-attendance {
+            flex: 0 0 auto;
+            padding: 4px 8px;
+            color: #9f1239;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 5px;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .clear-attendance:hover {
+            background: #ffe4e6;
+        }
+
+        .attendance-cell {
+            position: relative;
+            cursor: pointer;
+            transition:
+                background 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .attendance-cell::after {
+            position: absolute;
+            content: "A";
+            top: 3px;
+            right: 3px;
+            display: grid;
+            width: 18px;
+            height: 18px;
+            place-items: center;
+            color: #b91c1c;
+            background: #fee2e2;
+            border-radius: 50%;
+            font-size: 0.62rem;
+            font-weight: 900;
+        }
+
+        .attendance-cell.attendance-absent {
+            background: #fff7f7 !important;
+            box-shadow: inset 0 0 0 2px #fecaca;
+        }
+
+        .attendance-cell.attendance-present {
+            background: #ecfdf5 !important;
+            box-shadow: inset 0 0 0 2px #86efac;
+        }
+
+        .attendance-cell.attendance-present::after {
+            content: "✓";
+            color: #166534;
+            background: #bbf7d0;
+        }
+
+        .attendance-cell:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: -3px;
+        }
+
+        .numerical-lab.lab-hidden {
+            cursor: default;
+            background:
+                repeating-linear-gradient(
+                    45deg,
+                    #ffffff,
+                    #ffffff 6px,
+                    #f1f5f9 6px,
+                    #f1f5f9 12px
+                ) !important;
+            box-shadow: none;
+        }
+
+        .numerical-lab.lab-hidden::after {
+            display: none;
+        }
+
         @media screen and (max-width: 768px) {
             body {
                 padding: 4px;
@@ -520,6 +628,34 @@
                 font-size: 0.54rem;
             }
 
+            .attendance-panel {
+                min-height: 28px;
+                gap: 5px;
+                padding: 3px 6px;
+                font-size: 0.6rem;
+            }
+
+            .attendance-copy {
+                gap: 5px;
+            }
+
+            .attendance-help {
+                display: none;
+            }
+
+            .clear-attendance {
+                padding: 2px 5px;
+                border-radius: 4px;
+            }
+
+            .attendance-cell::after {
+                top: 2px;
+                right: 2px;
+                width: 14px;
+                height: 14px;
+                font-size: 0.5rem;
+            }
+
             .current-day-column {
                 border-left-width: 2px;
                 border-right-width: 2px;
@@ -576,6 +712,26 @@
 
             </div>
 
+        </div>
+
+        <div class="attendance-panel">
+            <div class="attendance-copy">
+                <span id="attendanceWeekLabel">Attendance</span>
+                <span class="attendance-summary" id="attendanceSummary">
+                    0/0 present
+                </span>
+                <span class="attendance-help">
+                    Tap a class to mark present
+                </span>
+            </div>
+
+            <button
+                class="clear-attendance"
+                id="clearAttendanceWeek"
+                type="button"
+            >
+                Clear week
+            </button>
         </div>
 
         <div
@@ -860,6 +1016,23 @@
         const numericalLabSunday =
             document.getElementById("numericalLabSunday");
 
+        const attendanceTable =
+            document.querySelector(".table-scroll table");
+
+        const attendanceWeekLabel =
+            document.getElementById("attendanceWeekLabel");
+
+        const attendanceSummary =
+            document.getElementById("attendanceSummary");
+
+        const clearAttendanceWeek =
+            document.getElementById("clearAttendanceWeek");
+
+        const ATTENDANCE_STORAGE_KEY =
+            "routine-attendance-v1";
+
+        let attendanceRecords = loadAttendanceRecords();
+
         function setEvenWeekLabVisibility(isVisible) {
             numericalLabSunday.classList.toggle(
                 "lab-hidden",
@@ -922,6 +1095,306 @@
             );
         }
 
+        function loadAttendanceRecords() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem(
+                        ATTENDANCE_STORAGE_KEY
+                    )
+                ) || {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function saveAttendanceRecords() {
+            try {
+                localStorage.setItem(
+                    ATTENDANCE_STORAGE_KEY,
+                    JSON.stringify(attendanceRecords)
+                );
+            } catch (error) {
+                // Attendance still works until the page is closed.
+            }
+        }
+
+        function getDhakaToday() {
+            const parts = new Intl.DateTimeFormat(
+                "en-CA",
+                {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    timeZone: "Asia/Dhaka"
+                }
+            ).formatToParts(new Date());
+
+            const values = {};
+
+            parts.forEach(function (part) {
+                if (part.type !== "literal") {
+                    values[part.type] = Number(part.value);
+                }
+            });
+
+            return new Date(
+                Date.UTC(
+                    values.year,
+                    values.month - 1,
+                    values.day
+                )
+            );
+        }
+
+        function getDisplayedWeekStart() {
+            const today = getDhakaToday();
+            const daysSinceSaturday =
+                (today.getUTCDay() + 1) % 7;
+
+            const weekStart = new Date(today);
+
+            weekStart.setUTCDate(
+                today.getUTCDate() -
+                daysSinceSaturday +
+                (weekToggle.checked ? 7 : 0)
+            );
+
+            return weekStart;
+        }
+
+        function formatDateKey(date) {
+            return date.toISOString().slice(0, 10);
+        }
+
+        function getClassDate(cell) {
+            const dayOffsets = {
+                saturday: 0,
+                sunday: 1,
+                monday: 2,
+                tuesday: 3,
+                wednesday: 4
+            };
+
+            const date = getDisplayedWeekStart();
+
+            date.setUTCDate(
+                date.getUTCDate() +
+                dayOffsets[cell.dataset.day]
+            );
+
+            return date;
+        }
+
+        function getAttendanceCells() {
+            return Array.from(
+                attendanceTable.querySelectorAll(
+                    ".course-cell[data-day]"
+                )
+            ).filter(function (cell) {
+                return (
+                    cell.querySelector(".course-name") &&
+                    !cell.classList.contains("ct-slot") &&
+                    !cell.classList.contains("lab-hidden")
+                );
+            });
+        }
+
+        function createAttendanceKey(cell) {
+            const course =
+                cell.querySelector(".course-code")
+                    ?.textContent.trim() ||
+                cell.querySelector(".course-name")
+                    .textContent.trim();
+
+            const time = cell
+                .closest("tr")
+                .querySelector(".time-label")
+                .textContent.trim();
+
+            return [
+                formatDateKey(getClassDate(cell)),
+                time,
+                course
+            ].join("|");
+        }
+
+        function updateAttendanceCell(cell) {
+            const isPresent =
+                attendanceRecords[
+                    cell.dataset.attendanceKey
+                ] === true;
+
+            cell.classList.toggle(
+                "attendance-present",
+                isPresent
+            );
+
+            cell.classList.toggle(
+                "attendance-absent",
+                !isPresent
+            );
+
+            cell.setAttribute(
+                "aria-pressed",
+                String(isPresent)
+            );
+
+            cell.title = isPresent
+                ? "Present — tap to mark absent"
+                : "Absent — tap to mark present";
+        }
+
+        function updateAttendanceSummary(cells) {
+            const present = cells.filter(function (cell) {
+                return (
+                    attendanceRecords[
+                        cell.dataset.attendanceKey
+                    ] === true
+                );
+            }).length;
+
+            const total = cells.length;
+            const percentage = total
+                ? Math.round((present / total) * 100)
+                : 0;
+
+            const start = getDisplayedWeekStart();
+            const end = new Date(start);
+
+            end.setUTCDate(start.getUTCDate() + 4);
+
+            const dateFormatter =
+                new Intl.DateTimeFormat(
+                    "en-GB",
+                    {
+                        day: "numeric",
+                        month: "short",
+                        timeZone: "UTC"
+                    }
+                );
+
+            attendanceWeekLabel.textContent =
+                dateFormatter.format(start) +
+                "–" +
+                dateFormatter.format(end);
+
+            attendanceSummary.textContent =
+                present +
+                "/" +
+                total +
+                " present · " +
+                percentage +
+                "%";
+        }
+
+        function setupAttendanceTracker() {
+            attendanceTable
+                .querySelectorAll(".attendance-cell")
+                .forEach(function (cell) {
+                    cell.classList.remove(
+                        "attendance-cell",
+                        "attendance-present",
+                        "attendance-absent"
+                    );
+
+                    cell.removeAttribute("role");
+                    cell.removeAttribute("tabindex");
+                    cell.removeAttribute("aria-pressed");
+                    cell.removeAttribute(
+                        "data-attendance-key"
+                    );
+                });
+
+            const cells = getAttendanceCells();
+
+            cells.forEach(function (cell) {
+                cell.classList.add("attendance-cell");
+                cell.dataset.attendanceKey =
+                    createAttendanceKey(cell);
+                cell.setAttribute("role", "button");
+                cell.setAttribute("tabindex", "0");
+
+                updateAttendanceCell(cell);
+            });
+
+            updateAttendanceSummary(cells);
+        }
+
+        function toggleAttendance(cell) {
+            const key = cell.dataset.attendanceKey;
+            const isPresent =
+                attendanceRecords[key] === true;
+
+            if (isPresent) {
+                delete attendanceRecords[key];
+            } else {
+                attendanceRecords[key] = true;
+            }
+
+            saveAttendanceRecords();
+            updateAttendanceCell(cell);
+            updateAttendanceSummary(
+                getAttendanceCells()
+            );
+        }
+
+        attendanceTable.addEventListener(
+            "click",
+            function (event) {
+                const cell = event.target.closest(
+                    ".attendance-cell"
+                );
+
+                if (cell) {
+                    toggleAttendance(cell);
+                }
+            }
+        );
+
+        attendanceTable.addEventListener(
+            "keydown",
+            function (event) {
+                const cell = event.target.closest(
+                    ".attendance-cell"
+                );
+
+                if (
+                    cell &&
+                    (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    )
+                ) {
+                    event.preventDefault();
+                    toggleAttendance(cell);
+                }
+            }
+        );
+
+        clearAttendanceWeek.addEventListener(
+            "click",
+            function () {
+                const cells = getAttendanceCells();
+
+                if (
+                    !window.confirm(
+                        "Clear attendance for the displayed week?"
+                    )
+                ) {
+                    return;
+                }
+
+                cells.forEach(function (cell) {
+                    delete attendanceRecords[
+                        cell.dataset.attendanceKey
+                    ];
+                });
+
+                saveAttendanceRecords();
+                setupAttendanceTracker();
+            }
+        );
+
         function displayCurrentWeek() {
             displayCTRoutine(currentWeekCT);
             setEvenWeekLabVisibility(true);
@@ -944,11 +1417,13 @@
                 }
 
                 highlightCurrentDay();
+                setupAttendanceTracker();
             }
         );
 
         displayCurrentWeek();
         highlightCurrentDay();
+        setupAttendanceTracker();
 
         window.setInterval(highlightCurrentDay, 60000);
     </script>
