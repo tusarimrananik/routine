@@ -9,6 +9,7 @@ import {
   AttendanceRecord,
   AttendanceStatus,
   SessionType,
+  SubjectAttendance,
 } from "@/lib/attendance";
 
 type Day = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday";
@@ -131,6 +132,27 @@ function readDemoRecords() {
   }
 }
 
+function buildRegularSubjectAttendance(records: AttendanceRecord[]) {
+  const counts = new Map<string, { present: number; total: number }>();
+
+  records.filter((record) => record.sessionType === "regular").forEach((record) => {
+    const current = counts.get(record.courseCode) || { present: 0, total: 0 };
+    current.total += 1;
+    if (record.status === "present") current.present += 1;
+    counts.set(record.courseCode, current);
+  });
+
+  const result: SubjectAttendance = {};
+  counts.forEach(({ present, total }, courseCode) => {
+    result[courseCode] = {
+      present,
+      total,
+      percentage: total ? Math.round((present / total) * 100) : 0,
+    };
+  });
+  return result;
+}
+
 type RoutineTrackerProps = {
   demoMode?: boolean;
   initialWeek?: number;
@@ -148,6 +170,7 @@ export function RoutineTracker({
 }: RoutineTrackerProps) {
   const [selectedWeek, setSelectedWeek] = useState(initialWeek);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
+  const [subjectAttendance, setSubjectAttendance] = useState<SubjectAttendance>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [clock, setClock] = useState(() => Date.now());
@@ -178,12 +201,13 @@ export function RoutineTracker({
     timeZone: "Asia/Dhaka",
   }).format(new Date(clock)).toLowerCase();
 
-  const applyResponse = useCallback((data: { records: AttendanceRecord[] }) => {
+  const applyResponse = useCallback((data: { records: AttendanceRecord[]; subjectAttendance?: SubjectAttendance }) => {
     const nextRecords: Record<string, AttendanceStatus> = {};
     data.records.forEach((record) => {
       nextRecords[attendanceKey(record)] = record.status;
     });
     setRecords(nextRecords);
+    if (data.subjectAttendance) setSubjectAttendance(data.subjectAttendance);
   }, []);
 
   const applyDemoRecords = useCallback((stored: Record<string, AttendanceRecord>) => {
@@ -191,6 +215,7 @@ export function RoutineTracker({
       records: Object.values(stored).filter(
         (record) => record.attendanceDate >= range.from && record.attendanceDate <= range.to,
       ),
+      subjectAttendance: buildRegularSubjectAttendance(Object.values(stored)),
     });
   }, [applyResponse, range]);
 
@@ -364,6 +389,7 @@ export function RoutineTracker({
                   if (session) {
                     const key = attendanceKey(toInput(session));
                     const status = records[key] || "absent";
+                    const regularStat = subjectAttendance[session.courseCode];
                     return (
                       <td
                         className={`course-cell attendance-cell attendance-${status} ${session.styleClass || ""}${todayClass}`}
@@ -385,6 +411,11 @@ export function RoutineTracker({
                         <div className="course-info">
                           <span className="course-code">{session.courseCode}</span>
                           <span className="course-name">{session.courseName}</span>
+                          {session.sessionType === "regular" ? (
+                            <span className="subject-regular-attendance">
+                              {regularStat?.total ? `${regularStat.percentage}% regular` : "— regular"}
+                            </span>
+                          ) : null}
                           {session.sessionType === "ct" ? <span className="ct-label">CT</span> : null}
                           {session.evenWeekOnly ? <span className="ct-label">Even Week · Every 2 Weeks</span> : null}
                           {session.instructor ? <span className="instructor">{session.instructor}</span> : null}
