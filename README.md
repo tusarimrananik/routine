@@ -43,4 +43,6 @@ Use a Turso database URL in production. A local SQLite file is not durable on Ve
 
 The database table and index are created automatically on the first authenticated attendance request.
 
-The app can be deployed before these variables are added. It will show a setup-pending login screen until Auth.js is configured. The `/tmp` database fallback is temporary and non-durable; configure Turso before recording real attendance.
+The app requires Google sign-in before the routine or analytics pages can be used. Until the Auth.js variables are configured, visitors are sent to `/login`, which displays a setup-pending notice. Attendance API requests remain unavailable.
+
+Any Google account with a verified email address can sign in. Attendance records are isolated by the normalized Google email address. Configure Turso before recording real attendance because the `/tmp` database fallback is temporary and non-durable on Vercel.
