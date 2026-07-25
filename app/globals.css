@@ -43,31 +43,31 @@ button, input { font: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 46px;
-  padding: 5px 8px;
-  color: white;
-  background: #111827;
-  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 7px;
+  color: var(--text);
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .profile-menu { position: relative; z-index: 20; }
-.profile-menu summary { display: grid; width: 36px; height: 36px; overflow: hidden; place-items: center; color: #111827; background: #dbeafe; border: 2px solid #60a5fa; border-radius: 50%; cursor: pointer; font-size: .78rem; font-weight: 900; list-style: none; }
+.profile-menu summary { display: grid; width: 28px; height: 28px; overflow: hidden; place-items: center; color: #334155; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; font-size: .68rem; font-weight: 900; list-style: none; }
 .profile-menu summary::-webkit-details-marker { display: none; }
 .profile-menu summary::marker { display: none; content: ""; }
-.profile-menu summary:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+.profile-menu summary:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
 .profile-menu img { width: 100%; height: 100%; object-fit: cover; }
-.profile-popover { position: absolute; top: calc(100% + 7px); left: 0; display: grid; width: 132px; gap: 4px; padding: 6px; background: white; border: 1px solid #dbe3ef; border-radius: 9px; box-shadow: 0 14px 35px rgba(15, 23, 42, .22); }
+.profile-popover { position: absolute; top: calc(100% + 6px); left: 0; display: grid; width: 128px; gap: 2px; padding: 5px; background: white; border: 1px solid #dbe3ef; border-radius: 8px; box-shadow: 0 10px 28px rgba(15, 23, 42, .16); }
 .profile-popover form { margin: 0; }
-.profile-action { display: block; width: 100%; padding: 8px 9px; color: #1e293b; background: transparent; border: 0; border-radius: 6px; cursor: pointer; font-size: .72rem; font-weight: 800; text-align: left; text-decoration: none; }
+.profile-action { display: block; width: 100%; padding: 7px 8px; color: #1e293b; background: transparent; border: 0; border-radius: 5px; cursor: pointer; font-size: .7rem; font-weight: 800; text-align: left; text-decoration: none; }
 .profile-action:hover { background: #eff6ff; }
 .profile-sign-out { color: #b91c1c; }
-.week-switcher { display: flex; align-items: center; gap: 3px; padding: 2px; background: #263244; border: 1px solid #3d4b60; border-radius: 9px; }
-.week-nav-button { display: grid; width: 32px; height: 32px; padding: 0; place-items: center; color: #dbeafe; background: transparent; border: 0; border-radius: 6px; cursor: pointer; font-size: 1.05rem; font-weight: 900; }
-.week-nav-button:hover:not(:disabled) { color: white; background: #3b4a60; }
-.week-nav-button:disabled { color: #64748b; cursor: not-allowed; }
-.week-display { min-width: 58px; color: white; font-size: .72rem; font-weight: 900; text-align: center; white-space: nowrap; }
-.week-nav-button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 1px; }
+.week-switcher { display: flex; align-items: center; gap: 1px; }
+.week-nav-button { display: grid; width: 28px; height: 28px; padding: 0; place-items: center; color: #475569; background: transparent; border: 0; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 900; }
+.week-nav-button:hover:not(:disabled) { color: #1d4ed8; background: #eff6ff; }
+.week-nav-button:disabled { color: #cbd5e1; cursor: not-allowed; }
+.week-display { min-width: 52px; color: #1e293b; font-size: .68rem; font-weight: 900; text-align: center; white-space: nowrap; }
+.week-nav-button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 1px; }
 .tracker-error { margin: 0; padding: 8px 12px; color: #b91c1c; background: #fef2f2; border-bottom: 1px solid #fecaca; font-size: .72rem; font-weight: 800; }
 
 .table-scroll { width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
@@ -164,12 +164,11 @@ thead .current-day-column { background: #d97706; }
   body { padding: 0; }
   .app-shell { max-width: none; }
   .schedule-container { min-width: 0; border-radius: 0; }
-  .tracker-toolbar { min-height: 42px; padding: 4px 6px; }
-  .profile-menu summary { width: 32px; height: 32px; }
+  .tracker-toolbar { min-height: 38px; padding: 4px 6px; }
+  .profile-menu summary { width: 28px; height: 28px; }
   .profile-popover { top: calc(100% + 5px); }
-  .week-switcher { gap: 2px; }
-  .week-nav-button { width: 30px; height: 30px; }
-  .week-display { min-width: 52px; font-size: .66rem; }
+  .week-nav-button { width: 28px; height: 28px; }
+  .week-display { min-width: 48px; font-size: .64rem; }
   table { min-width: 650px; }
   th, td { padding: 4px 3px; }
   thead th { font-size: .68rem; }
