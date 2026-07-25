@@ -99,67 +99,13 @@ const EMPTY_SUMMARY: AttendanceSummary = {
 };
 
 const DEMO_STORAGE_KEY = "routine-demo-attendance-v1";
+const TOTAL_WEEKS = 15;
+const STORAGE_WEEK_ONE = new Date(Date.UTC(2000, 0, 1));
 
-function getDhakaToday() {
-  const values: Record<string, number> = {};
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    timeZone: "Asia/Dhaka",
-  }).formatToParts(new Date());
-
-  parts.forEach((part) => {
-    if (part.type !== "literal") values[part.type] = Number(part.value);
-  });
-
-  return new Date(Date.UTC(values.year, values.month - 1, values.day));
-}
-
-function getCurrentRoutineWeekStart() {
-  const today = getDhakaToday();
-  const daysSinceSaturday = (today.getUTCDay() + 1) % 7;
-  const start = new Date(today);
-  start.setUTCDate(today.getUTCDate() - daysSinceSaturday);
+function getWeekStart(week: number) {
+  const start = new Date(STORAGE_WEEK_ONE);
+  start.setUTCDate(STORAGE_WEEK_ONE.getUTCDate() + ((week - 1) * 7));
   return start;
-}
-
-function getIsoWeekValue(date: Date) {
-  const target = new Date(date);
-  const day = target.getUTCDay() || 7;
-  target.setUTCDate(target.getUTCDate() + 4 - day);
-  const isoYear = target.getUTCFullYear();
-  const yearStart = new Date(Date.UTC(isoYear, 0, 1));
-  const week = Math.ceil((((target.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-  return `${isoYear}-W${String(week).padStart(2, "0")}`;
-}
-
-function routineWeekValue(weekStart: Date) {
-  const monday = new Date(weekStart);
-  monday.setUTCDate(weekStart.getUTCDate() + 2);
-  return getIsoWeekValue(monday);
-}
-
-function weekValueToRoutineStart(value: string) {
-  const match = /^(\d{4})-W(\d{2})$/.exec(value);
-  if (!match) return getCurrentRoutineWeekStart();
-
-  const year = Number(match[1]);
-  const week = Number(match[2]);
-  const januaryFourth = new Date(Date.UTC(year, 0, 4));
-  const januaryFourthDay = januaryFourth.getUTCDay() || 7;
-  const monday = new Date(januaryFourth);
-  monday.setUTCDate(januaryFourth.getUTCDate() - januaryFourthDay + 1 + ((week - 1) * 7));
-
-  const saturday = new Date(monday);
-  saturday.setUTCDate(monday.getUTCDate() - 2);
-  return saturday;
-}
-
-function shiftWeek(value: string, amount: number) {
-  const start = weekValueToRoutineStart(value);
-  start.setUTCDate(start.getUTCDate() + (amount * 7));
-  return routineWeekValue(start);
 }
 
 function toDateKey(date: Date) {
@@ -277,8 +223,7 @@ function readDemoRecords() {
 }
 
 export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
-  const currentWeekValue = routineWeekValue(getCurrentRoutineWeekStart());
-  const [selectedWeek, setSelectedWeek] = useState(currentWeekValue);
+  const [selectedWeek, setSelectedWeek] = useState(1);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
   const [summary, setSummary] = useState<AttendanceSummary>(EMPTY_SUMMARY);
   const [subjectAttendance, setSubjectAttendance] = useState<SubjectAttendance>({});
@@ -288,11 +233,8 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
   const [error, setError] = useState("");
   const [clock, setClock] = useState(() => Date.now());
 
-  const dhakaDateKey = toDateKey(getDhakaToday());
-  const weekStart = useMemo(() => weekValueToRoutineStart(selectedWeek), [selectedWeek]);
-  const currentWeekStart = getCurrentRoutineWeekStart();
-  const weekOffset = Math.round((weekStart.getTime() - currentWeekStart.getTime()) / (7 * 86400000));
-  const alternateCtWeek = Math.abs(weekOffset) % 2 === 1;
+  const weekStart = useMemo(() => getWeekStart(selectedWeek), [selectedWeek]);
+  const alternateCtWeek = selectedWeek % 2 === 0;
 
   const sessions = useMemo(() => {
     const regular = REGULAR_SESSIONS.filter((session) => !session.evenWeekOnly || !alternateCtWeek);
@@ -312,10 +254,10 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
     return { from: toDateKey(weekStart), to: toDateKey(end) };
   }, [weekStart]);
 
-  const currentDay = selectedWeek === currentWeekValue ? new Intl.DateTimeFormat("en-US", {
+  const currentDay = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     timeZone: "Asia/Dhaka",
-  }).format(new Date(clock)).toLowerCase() : "";
+  }).format(new Date(clock)).toLowerCase();
 
   const applyResponse = useCallback((data: { records: AttendanceRecord[]; summary: AttendanceSummary; subjectAttendance?: SubjectAttendance }) => {
     const nextRecords: Record<string, AttendanceStatus> = {};
@@ -438,44 +380,30 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
     });
   }
 
-  const weekEnd = new Date(weekStart);
-  weekEnd.setUTCDate(weekStart.getUTCDate() + 4);
-  const dateFormatter = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-  const weekLabel = `${dateFormatter.format(weekStart)}–${dateFormatter.format(weekEnd)} ${weekEnd.getUTCFullYear()}`;
-  const weekNumber = Number(selectedWeek.slice(-2));
-  const weekPosition = weekOffset === 0
-    ? "Current week"
-    : weekOffset === 1
-      ? "Next week"
-      : weekOffset === -1
-        ? "Previous week"
-        : weekOffset > 0
-          ? `${weekOffset} weeks ahead`
-          : `${Math.abs(weekOffset)} weeks ago`;
-
   return (
     <section className="schedule-container">
       <div className="toggle-container">
         <div className="selected-week-copy">
-          <strong>Week {weekNumber}</strong>
-          <span>{weekPosition} · {alternateCtWeek ? "Next CT plan" : "Current CT plan"}</span>
+          <strong>Week {selectedWeek}</strong>
+          <span>15-week semester · {alternateCtWeek ? "Next CT plan" : "Current CT plan"}</span>
         </div>
         <div className="week-picker">
-          <button type="button" aria-label="Previous week" onClick={() => setSelectedWeek((week) => shiftWeek(week, -1))}>‹</button>
+          <button type="button" aria-label="Previous week" disabled={selectedWeek === 1} onClick={() => setSelectedWeek((week) => Math.max(1, week - 1))}>‹</button>
           <label>
             <span>Select week</span>
-            <input type="week" value={selectedWeek} onChange={(event) => event.target.value && setSelectedWeek(event.target.value)} />
+            <select value={selectedWeek} onChange={(event) => setSelectedWeek(Number(event.target.value))}>
+              {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
+                <option key={week} value={week}>Week {week}</option>
+              ))}
+            </select>
           </label>
-          <button type="button" aria-label="Next week" onClick={() => setSelectedWeek((week) => shiftWeek(week, 1))}>›</button>
-          {selectedWeek !== currentWeekValue ? (
-            <button className="current-week-button" type="button" onClick={() => setSelectedWeek(currentWeekValue)}>Current</button>
-          ) : null}
+          <button type="button" aria-label="Next week" disabled={selectedWeek === TOTAL_WEEKS} onClick={() => setSelectedWeek((week) => Math.min(TOTAL_WEEKS, week + 1))}>›</button>
         </div>
       </div>
 
       <div className="attendance-panel">
         <div className="attendance-copy">
-          <span>Week {weekNumber} · {weekLabel}</span>
+          <span>Week {selectedWeek} of {TOTAL_WEEKS}</span>
           <span className="attendance-summary">
             {loading ? "Loading…" : `${summary.overall.present}/${summary.overall.total} completed · ${percentageLabel(summary.overall)}`}
           </span>
