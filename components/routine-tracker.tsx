@@ -133,6 +133,7 @@ function readDemoRecords() {
 
 type RoutineTrackerProps = {
   demoMode?: boolean;
+  initialWeek?: number;
   userImage?: string;
   userName?: string;
   signOutAction?: () => Promise<void>;
@@ -140,11 +141,12 @@ type RoutineTrackerProps = {
 
 export function RoutineTracker({
   demoMode = false,
+  initialWeek = 1,
   userImage = "",
   userName = "Student",
   signOutAction,
 }: RoutineTrackerProps) {
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [selectedWeek, setSelectedWeek] = useState(initialWeek);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -287,6 +289,12 @@ export function RoutineTracker({
     });
   }
 
+  function selectWeek(week: number) {
+    const nextWeek = Math.min(TOTAL_WEEKS, Math.max(1, week));
+    setSelectedWeek(nextWeek);
+    document.cookie = `routine-selected-week=${nextWeek}; Max-Age=31536000; Path=/; SameSite=Lax`;
+  }
+
   return (
     <section className="schedule-container">
       <div className="tracker-toolbar">
@@ -314,7 +322,7 @@ export function RoutineTracker({
             type="button"
             aria-label="Previous week"
             disabled={selectedWeek === 1}
-            onClick={() => setSelectedWeek((week) => Math.max(1, week - 1))}
+            onClick={() => selectWeek(selectedWeek - 1)}
           >
             ‹
           </button>
@@ -324,7 +332,7 @@ export function RoutineTracker({
             type="button"
             aria-label="Next week"
             disabled={selectedWeek === TOTAL_WEEKS}
-            onClick={() => setSelectedWeek((week) => Math.min(TOTAL_WEEKS, week + 1))}
+            onClick={() => selectWeek(selectedWeek + 1)}
           >
             ›
           </button>
