@@ -28,10 +28,10 @@ test("routine keeps attendance details out of the schedule view", () => {
   assert.doesNotMatch(tracker, /subject-attendance/);
 });
 
-test("analytics remains the single home for attendance totals and subject details", () => {
-  assert.match(analytics, /Overall Attendance/);
-  assert.match(analytics, /Regular Classes/);
-  assert.match(analytics, /CT Attendance/);
+test("analytics shows subject attendance details", () => {
+  assert.doesNotMatch(analytics, /Overall Attendance/);
+  assert.doesNotMatch(analytics, /Regular Classes/);
+  assert.doesNotMatch(analytics, /CT Attendance/);
   assert.match(analytics, /Attendance by Subject/);
   assert.match(analytics, /Present/);
   assert.match(analytics, /Absent/);
