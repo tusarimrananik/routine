@@ -86,6 +86,7 @@ thead .current-day-column { background: #d97706; }
 .course-info { display: flex; min-height: 40px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .course-code { color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .025em; }
 .course-name { color: var(--text); font-size: .8rem; font-weight: 700; line-height: 1.2; }
+.subject-regular-attendance { padding: 1px 5px; color: #166534; background: #dcfce7; border-radius: 999px; font-size: .58rem; font-weight: 900; line-height: 1.4; }
 .instructor { color: #475569; font-size: .72rem; font-weight: 600; }
 .room { color: var(--secondary); font-size: .7rem; font-style: italic; font-weight: 700; }
 .empty-cell { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #f1f5f9 6px, #f1f5f9 12px); }
