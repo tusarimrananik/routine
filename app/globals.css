@@ -21,7 +21,7 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 
 .app-shell {
   width: 100%;
@@ -127,7 +127,7 @@ thead .current-day-column { background: #d97706; }
 .date-filter { display: flex; align-items: flex-end; gap: 10px; padding: 12px; background: white; border: 1px solid var(--border); border-radius: 10px; }
 .date-filter label { display: flex; flex-direction: column; gap: 4px; }
 .date-filter label span { color: var(--muted); font-size: .68rem; font-weight: 800; }
-.date-filter input { min-height: 34px; padding: 5px 8px; color: var(--text); background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: .76rem; font-weight: 700; }
+.date-filter input, .date-filter select { min-height: 34px; padding: 5px 8px; color: var(--text); background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: .76rem; font-weight: 700; }
 .date-filter small { margin-left: auto; padding-bottom: 7px; color: var(--muted); font-size: .66rem; }
 .date-arrow { padding-bottom: 8px; color: var(--muted); }
 .analytics-error { margin: 0; padding: 9px 11px; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 7px; font-size: .75rem; font-weight: 700; }
@@ -190,7 +190,7 @@ thead .current-day-column { background: #d97706; }
   .analytics-header h1 { font-size: 1.15rem; }
   .date-filter { flex-wrap: wrap; gap: 7px; padding: 9px; }
   .date-filter label { flex: 1 1 125px; }
-  .date-filter input { width: 100%; }
+  .date-filter input, .date-filter select { width: 100%; }
   .date-arrow { display: none; }
   .date-filter small { width: 100%; margin: 0; padding: 0; }
   .analytics-summary-grid { gap: 6px; }
