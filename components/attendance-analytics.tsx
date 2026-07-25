@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { AttendanceRecord, AttendanceStat, SessionType } from "@/lib/attendance";
 
 const DEMO_STORAGE_KEY = "routine-demo-attendance-v1";
+const TOTAL_WEEKS = 15;
+const STORAGE_WEEK_ONE = new Date(Date.UTC(2000, 0, 1));
 
 type SubjectStat = {
   code: string;
@@ -37,6 +39,12 @@ function getDhakaNow() {
   };
 }
 
+function getWeekDate(week: number, dayOffset = 0) {
+  const date = new Date(STORAGE_WEEK_ONE);
+  date.setUTCDate(STORAGE_WEEK_ONE.getUTCDate() + ((week - 1) * 7) + dayOffset);
+  return date.toISOString().slice(0, 10);
+}
+
 function toStat(present: number, total: number): AttendanceStat {
   return {
     present,
@@ -65,9 +73,8 @@ function readDemoRecords() {
 }
 
 export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }) {
-  const today = getDhakaNow().date;
-  const [startDate, setStartDate] = useState("2026-01-01");
-  const [endDate, setEndDate] = useState(today);
+  const [startWeek, setStartWeek] = useState(1);
+  const [endWeek, setEndWeek] = useState(TOTAL_WEEKS);
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -77,12 +84,15 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     setLoading(true);
     setError("");
 
-    if (startDate > endDate) {
+    if (startWeek > endWeek) {
       setRecords([]);
-      setError("Start date must be before the end date.");
+      setError("Starting week must be before the ending week.");
       setLoading(false);
       return;
     }
+
+    const startDate = getWeekDate(startWeek);
+    const endDate = getWeekDate(endWeek, 4);
 
     const now = getDhakaNow();
     const onlyStarted = (record: AttendanceRecord) =>
@@ -119,7 +129,7 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     return () => {
       cancelled = true;
     };
-  }, [demoMode, endDate, startDate]);
+  }, [demoMode, endWeek, startWeek]);
 
   const subjects = useMemo(() => {
     const grouped = new Map<string, SubjectStat>();
@@ -152,15 +162,23 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     <section className="analytics-content">
       <div className="date-filter">
         <label>
-          <span>Starting from</span>
-          <input type="date" value={startDate} max={endDate} onChange={(event) => setStartDate(event.target.value)} />
+          <span>Starting week</span>
+          <select value={startWeek} onChange={(event) => setStartWeek(Number(event.target.value))}>
+            {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
+              <option key={week} value={week}>Week {week}</option>
+            ))}
+          </select>
         </label>
         <span className="date-arrow">→</span>
         <label>
-          <span>Up to</span>
-          <input type="date" value={endDate} min={startDate} max={today} onChange={(event) => setEndDate(event.target.value)} />
+          <span>Ending week</span>
+          <select value={endWeek} onChange={(event) => setEndWeek(Number(event.target.value))}>
+            {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
+              <option key={week} value={week}>Week {week}</option>
+            ))}
+          </select>
         </label>
-        <small>Only classes that have already started are counted.</small>
+        <small>Showing attendance from Week {startWeek} through Week {endWeek}.</small>
       </div>
 
       {error ? <p className="analytics-error">{error}</p> : null}
@@ -206,7 +224,7 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
             <tbody>
               {!loading && subjects.length === 0 ? (
                 <tr>
-                  <td className="empty-analytics" colSpan={5}>No attendance records in this date range.</td>
+                  <td className="empty-analytics" colSpan={5}>No attendance records in this week range.</td>
                 </tr>
               ) : (
                 subjects.map((subject) => (
