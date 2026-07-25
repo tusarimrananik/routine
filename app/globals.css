@@ -43,30 +43,30 @@ button, input { font: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 40px;
-  padding: 4px 7px;
-  color: var(--text);
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 6px;
+  min-height: 32px;
+  padding: 3px 6px;
+  color: white;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
 }
 
 .profile-menu { position: relative; z-index: 20; }
-.profile-menu summary { display: grid; width: 28px; height: 28px; overflow: hidden; place-items: center; color: #334155; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; font-size: .68rem; font-weight: 900; list-style: none; }
+.profile-menu summary { display: grid; width: 24px; height: 24px; overflow: hidden; place-items: center; color: #e2e8f0; background: #334155; border: 1px solid #64748b; border-radius: 50%; cursor: pointer; font-size: .6rem; font-weight: 900; list-style: none; }
 .profile-menu summary::-webkit-details-marker { display: none; }
 .profile-menu summary::marker { display: none; content: ""; }
-.profile-menu summary:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.profile-menu summary:focus-visible { outline: 2px solid #60a5fa; outline-offset: 1px; }
 .profile-menu img { width: 100%; height: 100%; object-fit: cover; }
-.profile-popover { position: absolute; top: calc(100% + 6px); left: 0; display: grid; width: 128px; gap: 2px; padding: 5px; background: white; border: 1px solid #dbe3ef; border-radius: 8px; box-shadow: 0 10px 28px rgba(15, 23, 42, .16); }
+.profile-popover { position: absolute; top: calc(100% + 5px); left: 0; display: grid; width: 124px; gap: 2px; padding: 4px; background: white; border: 1px solid #dbe3ef; border-radius: 7px; box-shadow: 0 10px 28px rgba(15, 23, 42, .2); }
 .profile-popover form { margin: 0; }
-.profile-action { display: block; width: 100%; padding: 7px 8px; color: #1e293b; background: transparent; border: 0; border-radius: 5px; cursor: pointer; font-size: .7rem; font-weight: 800; text-align: left; text-decoration: none; }
+.profile-action { display: block; width: 100%; padding: 6px 7px; color: #1e293b; background: transparent; border: 0; border-radius: 5px; cursor: pointer; font-size: .66rem; font-weight: 800; text-align: left; text-decoration: none; }
 .profile-action:hover { background: #eff6ff; }
 .profile-sign-out { color: #b91c1c; }
 .week-switcher { display: flex; align-items: center; gap: 1px; }
-.week-nav-button { display: grid; width: 28px; height: 28px; padding: 0; place-items: center; color: #475569; background: transparent; border: 0; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 900; }
-.week-nav-button:hover:not(:disabled) { color: #1d4ed8; background: #eff6ff; }
-.week-nav-button:disabled { color: #cbd5e1; cursor: not-allowed; }
-.week-display { min-width: 52px; color: #1e293b; font-size: .68rem; font-weight: 900; text-align: center; white-space: nowrap; }
+.week-nav-button { display: grid; width: 24px; height: 24px; padding: 0; place-items: center; color: #cbd5e1; background: transparent; border: 0; border-radius: 4px; cursor: pointer; font-size: .92rem; font-weight: 900; }
+.week-nav-button:hover:not(:disabled) { color: white; background: #1e293b; }
+.week-nav-button:disabled { color: #475569; cursor: not-allowed; }
+.week-display { min-width: 46px; color: #f8fafc; font-size: .62rem; font-weight: 900; text-align: center; white-space: nowrap; }
 .week-nav-button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 1px; }
 .tracker-error { margin: 0; padding: 8px 12px; color: #b91c1c; background: #fef2f2; border-bottom: 1px solid #fecaca; font-size: .72rem; font-weight: 800; }
 
@@ -164,11 +164,11 @@ thead .current-day-column { background: #d97706; }
   body { padding: 0; }
   .app-shell { max-width: none; }
   .schedule-container { min-width: 0; border-radius: 0; }
-  .tracker-toolbar { min-height: 38px; padding: 4px 6px; }
-  .profile-menu summary { width: 28px; height: 28px; }
+  .tracker-toolbar { min-height: 30px; padding: 3px 5px; }
+  .profile-menu summary { width: 24px; height: 24px; }
   .profile-popover { top: calc(100% + 5px); }
-  .week-nav-button { width: 28px; height: 28px; }
-  .week-display { min-width: 48px; font-size: .64rem; }
+  .week-nav-button { width: 24px; height: 24px; }
+  .week-display { min-width: 44px; font-size: .6rem; }
   table { min-width: 650px; }
   th, td { padding: 4px 3px; }
   thead th { font-size: .68rem; }
