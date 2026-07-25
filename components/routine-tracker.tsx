@@ -6,10 +6,8 @@ import {
   attendanceKey,
   AttendanceInput,
   AttendanceRecord,
-  AttendanceSummary,
   AttendanceStatus,
   SessionType,
-  SubjectAttendance,
 } from "@/lib/attendance";
 
 type Day = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday";
@@ -92,12 +90,6 @@ const NEXT_CT: SessionDefinition[] = [
   { id: "ct-tue-math", day: "tuesday", startTime: "08:00", endTime: "08:50", courseCode: "MATH 2213", courseName: "Mathematics CT", sessionType: "ct", styleClass: "ct-active" },
 ];
 
-const EMPTY_SUMMARY: AttendanceSummary = {
-  overall: { present: 0, total: 0, percentage: 0 },
-  regular: { present: 0, total: 0, percentage: 0 },
-  ct: { present: 0, total: 0, percentage: 0 },
-};
-
 const DEMO_STORAGE_KEY = "routine-demo-attendance-v1";
 const TOTAL_WEEKS = 15;
 const STORAGE_WEEK_ONE = new Date(Date.UTC(2000, 0, 1));
@@ -130,90 +122,6 @@ function toInput(session: DatedSession, status?: AttendanceStatus): AttendanceIn
   };
 }
 
-function percentageLabel(stat: AttendanceSummary["overall"]) {
-  return stat.total ? `${stat.percentage}%` : "—";
-}
-
-function getDhakaNow() {
-  const values: Record<string, string> = {};
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    timeZone: "Asia/Dhaka",
-  }).formatToParts(new Date());
-
-  parts.forEach((part) => {
-    if (part.type !== "literal") values[part.type] = part.value;
-  });
-
-  return {
-    date: `${values.year}-${values.month}-${values.day}`,
-    time: `${values.hour}:${values.minute}`,
-  };
-}
-
-function demoSummary(records: AttendanceRecord[]): AttendanceSummary {
-  const now = getDhakaNow();
-  const counts = {
-    regular: { present: 0, total: 0 },
-    ct: { present: 0, total: 0 },
-  };
-
-  records.forEach((record) => {
-    const started =
-      record.attendanceDate < now.date ||
-      (record.attendanceDate === now.date && record.startTime <= now.time);
-
-    if (!started) return;
-    counts[record.sessionType].total += 1;
-    if (record.status === "present") counts[record.sessionType].present += 1;
-  });
-
-  const toStat = (present: number, total: number) => ({
-    present,
-    total,
-    percentage: total ? Math.round((present / total) * 100) : 0,
-  });
-  const regular = toStat(counts.regular.present, counts.regular.total);
-  const ct = toStat(counts.ct.present, counts.ct.total);
-
-  return {
-    regular,
-    ct,
-    overall: toStat(regular.present + ct.present, regular.total + ct.total),
-  };
-}
-
-function demoSubjectAttendance(records: AttendanceRecord[]): SubjectAttendance {
-  const now = getDhakaNow();
-  const counts: Record<string, { present: number; total: number }> = {};
-
-  records.forEach((record) => {
-    const started =
-      record.attendanceDate < now.date ||
-      (record.attendanceDate === now.date && record.startTime <= now.time);
-
-    if (!started || record.sessionType !== "regular") return;
-    counts[record.courseCode] ||= { present: 0, total: 0 };
-    counts[record.courseCode].total += 1;
-    if (record.status === "present") counts[record.courseCode].present += 1;
-  });
-
-  return Object.fromEntries(
-    Object.entries(counts).map(([courseCode, count]) => [
-      courseCode,
-      {
-        ...count,
-        percentage: count.total ? Math.round((count.present / count.total) * 100) : 0,
-      },
-    ]),
-  );
-}
-
 function readDemoRecords() {
   try {
     return JSON.parse(window.localStorage.getItem(DEMO_STORAGE_KEY) || "{}") as Record<string, AttendanceRecord>;
@@ -225,11 +133,7 @@ function readDemoRecords() {
 export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
-  const [summary, setSummary] = useState<AttendanceSummary>(EMPTY_SUMMARY);
-  const [subjectAttendance, setSubjectAttendance] = useState<SubjectAttendance>({});
-  const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
-  const [showSummary, setShowSummary] = useState(false);
   const [error, setError] = useState("");
   const [clock, setClock] = useState(() => Date.now());
 
@@ -259,24 +163,19 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
     timeZone: "Asia/Dhaka",
   }).format(new Date(clock)).toLowerCase();
 
-  const applyResponse = useCallback((data: { records: AttendanceRecord[]; summary: AttendanceSummary; subjectAttendance?: SubjectAttendance }) => {
+  const applyResponse = useCallback((data: { records: AttendanceRecord[] }) => {
     const nextRecords: Record<string, AttendanceStatus> = {};
     data.records.forEach((record) => {
       nextRecords[attendanceKey(record)] = record.status;
     });
     setRecords(nextRecords);
-    setSummary(data.summary);
-    setSubjectAttendance(data.subjectAttendance || {});
   }, []);
 
   const applyDemoRecords = useCallback((stored: Record<string, AttendanceRecord>) => {
-    const allRecords = Object.values(stored);
     applyResponse({
-      records: allRecords.filter(
+      records: Object.values(stored).filter(
         (record) => record.attendanceDate >= range.from && record.attendanceDate <= range.to,
       ),
-      summary: demoSummary(allRecords),
-      subjectAttendance: demoSubjectAttendance(allRecords),
     });
   }, [applyResponse, range]);
 
@@ -287,7 +186,6 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     setError("");
 
     if (demoMode) {
@@ -301,7 +199,6 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
 
       window.localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(stored));
       applyDemoRecords(stored);
-      setLoading(false);
       return;
     }
 
@@ -323,9 +220,6 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
       })
       .catch((requestError: Error) => {
         if (!cancelled) setError(requestError.message);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
       });
 
     return () => {
@@ -383,36 +277,48 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
   return (
     <section className="schedule-container">
       <div className="toggle-container">
-        <div className="selected-week-copy">
-          <strong>Week {selectedWeek}</strong>
-          <span>15-week semester · {alternateCtWeek ? "Next CT plan" : "Current CT plan"}</span>
-        </div>
-        <div className="week-picker">
-          <button type="button" aria-label="Previous week" disabled={selectedWeek === 1} onClick={() => setSelectedWeek((week) => Math.max(1, week - 1))}>‹</button>
-          <label>
-            <span>Select week</span>
-            <select value={selectedWeek} onChange={(event) => setSelectedWeek(Number(event.target.value))}>
-              {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
-                <option key={week} value={week}>Week {week}</option>
-              ))}
-            </select>
-          </label>
-          <button type="button" aria-label="Next week" disabled={selectedWeek === TOTAL_WEEKS} onClick={() => setSelectedWeek((week) => Math.min(TOTAL_WEEKS, week + 1))}>›</button>
-        </div>
-      </div>
-
-      <div className="attendance-panel">
-        <div className="attendance-copy">
-          <span>Week {selectedWeek} of {TOTAL_WEEKS}</span>
-          <span className="attendance-summary">
-            {loading ? "Loading…" : `${summary.overall.present}/${summary.overall.total} completed · ${percentageLabel(summary.overall)}`}
+        <div className="week-heading">
+          <div className="week-number">
+            <span>Week</span>
+            <strong>{selectedWeek}</strong>
+            <span>of {TOTAL_WEEKS}</span>
+          </div>
+          <span className="week-plan">
+            {alternateCtWeek ? "Next CT plan" : "Current CT plan"}
           </span>
-          {error ? <span className="save-error">{error}</span> : <span className="attendance-help">Tap a class to change attendance</span>}
         </div>
-        <button className="summary-button" type="button" onClick={() => setShowSummary(true)}>
-          Overall Attendance
-        </button>
+        <div className="week-picker" role="group" aria-label="Choose schedule week">
+          <button
+            className="week-nav-button"
+            type="button"
+            aria-label="Previous week"
+            disabled={selectedWeek === 1}
+            onClick={() => setSelectedWeek((week) => Math.max(1, week - 1))}
+          >
+            ‹
+          </button>
+          <select
+            className="week-select"
+            aria-label="Select week"
+            value={selectedWeek}
+            onChange={(event) => setSelectedWeek(Number(event.target.value))}
+          >
+            {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
+              <option key={week} value={week}>Week {week}</option>
+            ))}
+          </select>
+          <button
+            className="week-nav-button"
+            type="button"
+            aria-label="Next week"
+            disabled={selectedWeek === TOTAL_WEEKS}
+            onClick={() => setSelectedWeek((week) => Math.min(TOTAL_WEEKS, week + 1))}
+          >
+            ›
+          </button>
+        </div>
       </div>
+      {error ? <p className="tracker-error" role="alert">{error}</p> : null}
 
       <div className="table-scroll" role="region" aria-label="Class routine" tabIndex={0}>
         <table>
@@ -459,13 +365,6 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
                         <div className="course-info">
                           <span className="course-code">{session.courseCode}</span>
                           <span className="course-name">{session.courseName}</span>
-                          {session.sessionType === "regular" ? (
-                            <span className="subject-attendance">
-                              Attendance: {subjectAttendance[session.courseCode]?.total
-                                ? `${subjectAttendance[session.courseCode].percentage}%`
-                                : "—"}
-                            </span>
-                          ) : null}
                           {session.sessionType === "ct" ? <span className="ct-label">CT</span> : null}
                           {session.evenWeekOnly ? <span className="ct-label">Even Week · Every 2 Weeks</span> : null}
                           {session.instructor ? <span className="instructor">{session.instructor}</span> : null}
@@ -487,40 +386,6 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
           </tbody>
         </table>
       </div>
-
-      {showSummary ? (
-        <div className="modal-backdrop" role="presentation" onMouseDown={() => setShowSummary(false)}>
-          <section className="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <p className="modal-eyebrow">Saved attendance</p>
-                <h2 id="summary-title">Overall Attendance</h2>
-              </div>
-              <button className="modal-close" type="button" aria-label="Close" onClick={() => setShowSummary(false)}>×</button>
-            </div>
-
-            <div className="stat-grid">
-              <article className="stat-card stat-overall">
-                <span>Overall</span>
-                <strong>{percentageLabel(summary.overall)}</strong>
-                <small>{summary.overall.present} of {summary.overall.total} attended</small>
-              </article>
-              <article className="stat-card">
-                <span>Regular Classes</span>
-                <strong>{percentageLabel(summary.regular)}</strong>
-                <small>{summary.regular.present} of {summary.regular.total} attended</small>
-              </article>
-              <article className="stat-card stat-ct">
-                <span>CT Attendance</span>
-                <strong>{percentageLabel(summary.ct)}</strong>
-                <small>{summary.ct.present} of {summary.ct.total} attended</small>
-              </article>
-            </div>
-
-            <p className="summary-note">Only classes and CTs whose start time has passed are included.</p>
-          </section>
-        </div>
-      ) : null}
     </section>
   );
 }
