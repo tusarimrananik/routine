@@ -44,8 +44,7 @@ button, input { font: inherit; }
 .user-name { font-size: .78rem; font-weight: 800; }
 .user-email { overflow: hidden; color: #cbd5e1; font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
 
-.sign-out-button,
-.summary-button {
+.sign-out-button {
   padding: 5px 9px;
   border: 1px solid #cbd5e1;
   border-radius: 5px;
@@ -70,34 +69,29 @@ button, input { font: inherit; }
   box-shadow: 0 0 20px rgba(15, 23, 42, .1);
 }
 
-.toggle-container,
-.attendance-panel {
+.toggle-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  background: white;
+  gap: 16px;
+  min-height: 58px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-bottom: 1px solid var(--border);
 }
 
-.toggle-container { min-height: 38px; padding: 6px 12px; }
-.selected-week-copy { display: flex; min-width: 0; align-items: baseline; gap: 7px; }
-.selected-week-copy strong { color: var(--text); font-size: .82rem; }
-.selected-week-copy span { color: var(--muted); font-size: .7rem; font-weight: 700; }
-.week-picker { display: flex; align-items: center; gap: 5px; }
-.week-picker label { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: .67rem; font-weight: 800; }
-.week-picker input { width: 132px; min-height: 27px; padding: 2px 5px; color: var(--text); background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 5px; font-size: .69rem; font-weight: 800; }
-.week-picker button { display: grid; min-width: 27px; height: 27px; padding: 0 6px; place-items: center; color: #1e3a8a; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 900; }
-.week-picker button:hover { background: #dbeafe; }
-.week-picker .current-week-button { padding: 0 7px; font-size: .62rem; }
-
-.attendance-panel { min-height: 38px; padding: 6px 12px; color: var(--muted); font-size: .76rem; font-weight: 700; background: #f8fafc; }
-.attendance-copy { display: flex; min-width: 0; align-items: center; gap: 8px; }
-.attendance-summary { color: var(--text); }
-.attendance-help { font-weight: 600; }
-.summary-button { flex: 0 0 auto; color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
-.summary-button:hover { background: #dbeafe; }
-.save-error { color: #b91c1c; }
+.week-heading { display: flex; min-width: 0; align-items: center; gap: 10px; }
+.week-number { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+.week-number span { color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+.week-number strong { color: #1d4ed8; font-size: 1.35rem; line-height: 1; }
+.week-plan { padding: 5px 8px; color: #475569; background: #eef2f7; border-radius: 999px; font-size: .66rem; font-weight: 800; white-space: nowrap; }
+.week-picker { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; padding: 3px; background: #e8eef7; border: 1px solid #d4deec; border-radius: 11px; }
+.week-nav-button { display: grid; width: 40px; height: 40px; padding: 0; place-items: center; color: #1d4ed8; background: white; border: 0; border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: 1.35rem; font-weight: 900; }
+.week-nav-button:hover:not(:disabled) { color: white; background: #2563eb; }
+.week-nav-button:disabled { color: #94a3b8; background: #f1f5f9; box-shadow: none; cursor: not-allowed; }
+.week-select { min-width: 116px; height: 40px; padding: 0 12px; color: #172554; background: white; border: 0; border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: .78rem; font-weight: 900; text-align: center; }
+.week-select:focus-visible, .week-nav-button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+.tracker-error { margin: 0; padding: 8px 12px; color: #b91c1c; background: #fef2f2; border-bottom: 1px solid #fecaca; font-size: .72rem; font-weight: 800; }
 
 .table-scroll { width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
 table { width: 100%; min-width: 880px; table-layout: fixed; border-collapse: collapse; }
@@ -115,7 +109,6 @@ thead .current-day-column { background: #d97706; }
 .course-info { display: flex; min-height: 40px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .course-code { color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .025em; }
 .course-name { color: var(--text); font-size: .8rem; font-weight: 700; line-height: 1.2; }
-.subject-attendance { color: #166534; font-size: .64rem; font-weight: 900; }
 .instructor { color: #475569; font-size: .72rem; font-weight: 600; }
 .room { color: var(--secondary); font-size: .7rem; font-style: italic; font-weight: 700; }
 .empty-cell { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #f1f5f9 6px, #f1f5f9 12px); }
@@ -136,23 +129,6 @@ thead .current-day-column { background: #d97706; }
 .attendance-cell:focus-visible { outline: 3px solid #2563eb; outline-offset: -3px; }
 .saving-dot { position: absolute; left: 5px; bottom: 5px; width: 7px; height: 7px; background: #2563eb; border-radius: 50%; animation: pulse .7s infinite alternate; }
 @keyframes pulse { to { opacity: .25; } }
-
-.modal-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(15, 23, 42, .58); }
-.summary-modal { width: min(520px, 100%); padding: 18px; background: white; border-radius: 12px; box-shadow: 0 24px 70px rgba(15, 23, 42, .3); }
-.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.modal-eyebrow { margin: 0 0 3px; color: var(--secondary); font-size: .68rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
-.modal-header h2 { margin: 0; font-size: 1.25rem; }
-.modal-close { width: 32px; height: 32px; color: var(--muted); background: #f1f5f9; border: 0; border-radius: 50%; cursor: pointer; font-size: 1.3rem; }
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
-.stat-card { display: flex; min-height: 118px; flex-direction: column; justify-content: center; padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
-.stat-card span { color: var(--muted); font-size: .7rem; font-weight: 800; }
-.stat-card strong { margin: 4px 0; color: #166534; font-size: 1.65rem; }
-.stat-card small { color: var(--muted); font-size: .65rem; }
-.stat-overall { background: #eff6ff; border-color: #bfdbfe; }
-.stat-overall strong { color: #1d4ed8; }
-.stat-ct { background: #fff1f2; border-color: #fecdd3; }
-.stat-ct strong { color: #be123c; }
-.summary-note { margin: 14px 0 0; color: var(--muted); font-size: .7rem; }
 
 .login-page { display: grid; min-height: 100vh; place-items: center; padding: 20px; background: radial-gradient(circle at top, #dbeafe, transparent 45%), var(--page-bg); }
 .login-card { width: min(390px, 100%); padding: 30px; text-align: center; background: white; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 24px 70px rgba(15, 23, 42, .14); }
@@ -217,19 +193,15 @@ thead .current-day-column { background: #d97706; }
   .demo-badge { padding: 3px 6px; font-size: .58rem; }
   .analytics-link { padding: 3px 6px; font-size: .59rem; }
   .schedule-container { min-width: 0; border-radius: 0; }
-  .toggle-container { min-height: 28px; padding: 3px 7px; }
-  .selected-week-copy { gap: 4px; }
-  .selected-week-copy strong { font-size: .65rem; }
-  .selected-week-copy span { max-width: 92px; overflow: hidden; font-size: .54rem; text-overflow: ellipsis; white-space: nowrap; }
-  .week-picker { gap: 3px; }
-  .week-picker label > span { display: none; }
-  .week-picker input { width: 104px; min-height: 22px; padding: 1px 3px; font-size: .58rem; }
-  .week-picker button { min-width: 22px; height: 22px; padding: 0 4px; font-size: .8rem; }
-  .week-picker .current-week-button { padding: 0 5px; font-size: .52rem; }
-  .attendance-panel { min-height: 30px; gap: 5px; padding: 3px 6px; font-size: .6rem; }
-  .attendance-copy { gap: 5px; }
-  .attendance-help { display: none; }
-  .summary-button { padding: 3px 5px; font-size: .58rem; }
+  .toggle-container { min-height: 60px; gap: 8px; padding: 7px; }
+  .week-heading { gap: 6px; }
+  .week-number { gap: 3px; }
+  .week-number span { font-size: .58rem; }
+  .week-number strong { font-size: 1.18rem; }
+  .week-plan { padding: 4px 6px; font-size: .56rem; }
+  .week-picker { gap: 3px; padding: 2px; border-radius: 10px; }
+  .week-nav-button { width: 44px; height: 44px; border-radius: 8px; }
+  .week-select { min-width: 98px; height: 44px; padding: 0 8px; font-size: .7rem; }
   table { min-width: 650px; }
   th, td { padding: 4px 3px; }
   thead th { font-size: .68rem; }
@@ -241,14 +213,11 @@ thead .current-day-column { background: #d97706; }
   .course-info { min-height: 32px; gap: 1px; }
   .course-code { font-size: .56rem; }
   .course-name { font-size: .66rem; line-height: 1.1; }
-  .subject-attendance { font-size: .53rem; line-height: 1.05; }
   .instructor { font-size: .58rem; line-height: 1.1; }
   .room { font-size: .57rem; }
   .ct-label { padding: 1px 4px; font-size: .54rem; }
   .attendance-cell::after { top: 2px; right: 2px; width: 14px; height: 14px; font-size: .5rem; }
   .current-day-column { border-left-width: 2px !important; border-right-width: 2px !important; }
-  .stat-grid { grid-template-columns: 1fr; }
-  .stat-card { min-height: 84px; }
   .analytics-page { padding: 10px; }
   .analytics-header { margin-bottom: 10px; }
   .analytics-header h1 { font-size: 1.15rem; }
@@ -267,9 +236,11 @@ thead .current-day-column { background: #d97706; }
 }
 
 @media (max-width: 420px) {
+  .week-plan { display: none; }
+  .week-nav-button { width: 44px; height: 44px; }
+  .week-select { height: 44px; }
   table { min-width: 620px; }
   .time-column { width: 80px; }
   .time-label { font-size: .58rem; }
-  .attendance-summary { display: none; }
   .login-card { padding: 24px 18px; }
 }
