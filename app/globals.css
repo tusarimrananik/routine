@@ -73,23 +73,23 @@ button, input { font: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 58px;
-  padding: 8px 12px;
+  gap: 10px;
+  min-height: 48px;
+  padding: 5px 10px;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-bottom: 1px solid var(--border);
 }
 
-.week-heading { display: flex; min-width: 0; align-items: center; gap: 10px; }
-.week-number { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
-.week-number span { color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
-.week-number strong { color: #1d4ed8; font-size: 1.35rem; line-height: 1; }
-.week-plan { padding: 5px 8px; color: #475569; background: #eef2f7; border-radius: 999px; font-size: .66rem; font-weight: 800; white-space: nowrap; }
-.week-picker { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; padding: 3px; background: #e8eef7; border: 1px solid #d4deec; border-radius: 11px; }
-.week-nav-button { display: grid; width: 40px; height: 40px; padding: 0; place-items: center; color: #1d4ed8; background: white; border: 0; border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: 1.35rem; font-weight: 900; }
+.week-heading { display: flex; min-width: 0; align-items: center; gap: 7px; }
+.week-number { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; }
+.week-number span { color: var(--muted); font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+.week-number strong { color: #1d4ed8; font-size: 1.12rem; line-height: 1; }
+.week-plan { padding: 4px 7px; color: #475569; background: #eef2f7; border-radius: 999px; font-size: .6rem; font-weight: 800; white-space: nowrap; }
+.week-picker { display: flex; flex: 0 0 auto; align-items: center; gap: 3px; padding: 2px; background: #e8eef7; border: 1px solid #d4deec; border-radius: 9px; }
+.week-nav-button { display: grid; width: 34px; height: 34px; padding: 0; place-items: center; color: #1d4ed8; background: white; border: 0; border-radius: 7px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: 1.1rem; font-weight: 900; }
 .week-nav-button:hover:not(:disabled) { color: white; background: #2563eb; }
 .week-nav-button:disabled { color: #94a3b8; background: #f1f5f9; box-shadow: none; cursor: not-allowed; }
-.week-select { min-width: 116px; height: 40px; padding: 0 12px; color: #172554; background: white; border: 0; border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: .78rem; font-weight: 900; text-align: center; }
+.week-select { min-width: 96px; height: 34px; padding: 0 8px; color: #172554; background: white; border: 0; border-radius: 7px; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); cursor: pointer; font-size: .7rem; font-weight: 900; text-align: center; }
 .week-select:focus-visible, .week-nav-button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
 .tracker-error { margin: 0; padding: 8px 12px; color: #b91c1c; background: #fef2f2; border-bottom: 1px solid #fecaca; font-size: .72rem; font-weight: 800; }
 
@@ -193,15 +193,15 @@ thead .current-day-column { background: #d97706; }
   .demo-badge { padding: 3px 6px; font-size: .58rem; }
   .analytics-link { padding: 3px 6px; font-size: .59rem; }
   .schedule-container { min-width: 0; border-radius: 0; }
-  .toggle-container { min-height: 60px; gap: 8px; padding: 7px; }
-  .week-heading { gap: 6px; }
+  .toggle-container { min-height: 44px; gap: 6px; padding: 4px 6px; }
+  .week-heading { gap: 4px; }
   .week-number { gap: 3px; }
-  .week-number span { font-size: .58rem; }
-  .week-number strong { font-size: 1.18rem; }
-  .week-plan { padding: 4px 6px; font-size: .56rem; }
-  .week-picker { gap: 3px; padding: 2px; border-radius: 10px; }
-  .week-nav-button { width: 44px; height: 44px; border-radius: 8px; }
-  .week-select { min-width: 98px; height: 44px; padding: 0 8px; font-size: .7rem; }
+  .week-number span { font-size: .54rem; }
+  .week-number strong { font-size: 1rem; }
+  .week-plan { display: none; }
+  .week-picker { gap: 2px; padding: 2px; border-radius: 8px; }
+  .week-nav-button { width: 34px; height: 34px; border-radius: 6px; }
+  .week-select { min-width: 78px; height: 34px; padding: 0 6px; font-size: .64rem; }
   table { min-width: 650px; }
   th, td { padding: 4px 3px; }
   thead th { font-size: .68rem; }
@@ -236,9 +236,6 @@ thead .current-day-column { background: #d97706; }
 }
 
 @media (max-width: 420px) {
-  .week-plan { display: none; }
-  .week-nav-button { width: 44px; height: 44px; }
-  .week-select { height: 44px; }
   table { min-width: 620px; }
   .time-column { width: 80px; }
   .time-label { font-size: .58rem; }
