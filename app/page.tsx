@@ -3,21 +3,21 @@ import Link from "next/link";
 
 import { auth, authConfigured, signOut } from "@/auth";
 import { RoutineTracker } from "@/components/routine-tracker";
+import { getProtectedRouteRedirect } from "@/lib/auth-policy";
 
 export default async function HomePage() {
   const session = authConfigured ? await auth() : null;
+  const destination = getProtectedRouteRedirect({
+    authConfigured,
+    email: session?.user?.email,
+  });
 
-  if (authConfigured && !session?.user?.email) redirect("/login");
+  if (destination) redirect(destination);
 
-  const user = authConfigured
-    ? {
-        name: session?.user?.name || "Student",
-        email: session?.user?.email || "",
-      }
-    : {
-        name: "Demo User",
-        email: "Attendance is saved on this device",
-      };
+  const user = {
+    name: session?.user?.name || "Student",
+    email: session?.user?.email || "",
+  };
 
   return (
     <main className="app-shell">
@@ -29,24 +29,20 @@ export default async function HomePage() {
 
         <div className="user-actions">
           <Link className="analytics-link" href="/analytics">Analytics</Link>
-          {authConfigured ? (
-            <form
-              action={async () => {
-                "use server";
-                await signOut({ redirectTo: "/login" });
-              }}
-            >
-              <button className="sign-out-button" type="submit">
-                Sign out
-              </button>
-            </form>
-          ) : (
-            <span className="demo-badge">Demo mode</span>
-          )}
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirectTo: "/login" });
+            }}
+          >
+            <button className="sign-out-button" type="submit">
+              Sign out
+            </button>
+          </form>
         </div>
       </div>
 
-      <RoutineTracker demoMode={!authConfigured} />
+      <RoutineTracker />
     </main>
   );
 }

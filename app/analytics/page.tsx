@@ -3,11 +3,16 @@ import { redirect } from "next/navigation";
 
 import { auth, authConfigured } from "@/auth";
 import { AttendanceAnalytics } from "@/components/attendance-analytics";
+import { getProtectedRouteRedirect } from "@/lib/auth-policy";
 
 export default async function AnalyticsPage() {
   const session = authConfigured ? await auth() : null;
+  const destination = getProtectedRouteRedirect({
+    authConfigured,
+    email: session?.user?.email,
+  });
 
-  if (authConfigured && !session?.user?.email) redirect("/login");
+  if (destination) redirect(destination);
 
   return (
     <main className="analytics-page">
@@ -19,7 +24,7 @@ export default async function AnalyticsPage() {
         <Link className="back-link" href="/">← Routine</Link>
       </header>
 
-      <AttendanceAnalytics demoMode={!authConfigured} />
+      <AttendanceAnalytics />
     </main>
   );
 }

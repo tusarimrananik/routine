@@ -1,14 +1,16 @@
 import { redirect } from "next/navigation";
 
 import { auth, authConfigured, signIn } from "@/auth";
+import { getLoginRouteRedirect } from "@/lib/auth-policy";
 
 export default async function LoginPage() {
-  if (!authConfigured) redirect("/");
+  const session = authConfigured ? await auth() : null;
+  const destination = getLoginRouteRedirect({
+    authConfigured,
+    email: session?.user?.email,
+  });
 
-  if (authConfigured) {
-    const session = await auth();
-    if (session?.user) redirect("/");
-  }
+  if (destination) redirect(destination);
 
   return (
     <main className="login-page">
