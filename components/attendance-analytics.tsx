@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { AttendanceRecord, AttendanceStat, SessionType } from "@/lib/attendance";
+import { AttendanceRecord } from "@/lib/attendance";
 
 const DEMO_STORAGE_KEY = "routine-demo-attendance-v1";
 const TOTAL_WEEKS = 15;
@@ -43,24 +43,6 @@ function getWeekDate(week: number, dayOffset = 0) {
   const date = new Date(STORAGE_WEEK_ONE);
   date.setUTCDate(STORAGE_WEEK_ONE.getUTCDate() + ((week - 1) * 7) + dayOffset);
   return date.toISOString().slice(0, 10);
-}
-
-function toStat(present: number, total: number): AttendanceStat {
-  return {
-    present,
-    total,
-    percentage: total ? Math.round((present / total) * 100) : 0,
-  };
-}
-
-function buildTotal(records: AttendanceRecord[], type?: SessionType) {
-  const selected = type ? records.filter((record) => record.sessionType === type) : records;
-  const present = selected.filter((record) => record.status === "present").length;
-  return toStat(present, selected.length);
-}
-
-function percentageLabel(stat: AttendanceStat) {
-  return stat.total ? `${stat.percentage}%` : "—";
 }
 
 function readDemoRecords() {
@@ -154,10 +136,6 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     return Array.from(grouped.values()).sort((a, b) => a.code.localeCompare(b.code));
   }, [records]);
 
-  const overall = buildTotal(records);
-  const regular = buildTotal(records, "regular");
-  const ct = buildTotal(records, "ct");
-
   return (
     <section className="analytics-content">
       <div className="date-filter">
@@ -182,24 +160,6 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
       </div>
 
       {error ? <p className="analytics-error">{error}</p> : null}
-
-      <div className="analytics-summary-grid">
-        <article className="analytics-summary-card overall-card">
-          <span>Overall Attendance</span>
-          <strong>{loading ? "…" : percentageLabel(overall)}</strong>
-          <small>{overall.present} present out of {overall.total}</small>
-        </article>
-        <article className="analytics-summary-card">
-          <span>Regular Classes</span>
-          <strong>{loading ? "…" : percentageLabel(regular)}</strong>
-          <small>{regular.present} present out of {regular.total}</small>
-        </article>
-        <article className="analytics-summary-card ct-card">
-          <span>CT Attendance</span>
-          <strong>{loading ? "…" : percentageLabel(ct)}</strong>
-          <small>{ct.present} present out of {ct.total}</small>
-        </article>
-      </div>
 
       <section className="subject-section">
         <div className="subject-heading">
