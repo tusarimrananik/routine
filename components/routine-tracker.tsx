@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -130,7 +131,19 @@ function readDemoRecords() {
   }
 }
 
-export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
+type RoutineTrackerProps = {
+  demoMode?: boolean;
+  userImage?: string;
+  userName?: string;
+  signOutAction?: () => Promise<void>;
+};
+
+export function RoutineTracker({
+  demoMode = false,
+  userImage = "",
+  userName = "Student",
+  signOutAction,
+}: RoutineTrackerProps) {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [records, setRecords] = useState<Record<string, AttendanceStatus>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
@@ -276,18 +289,26 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
 
   return (
     <section className="schedule-container">
-      <div className="toggle-container">
-        <div className="week-heading">
-          <div className="week-number">
-            <span>Week</span>
-            <strong>{selectedWeek}</strong>
-            <span>of {TOTAL_WEEKS}</span>
+      <div className="tracker-toolbar">
+        <details className="profile-menu">
+          <summary aria-label="Open account menu">
+            {userImage ? (
+              <img src={userImage} alt={`${userName} profile`} referrerPolicy="no-referrer" />
+            ) : (
+              <span aria-hidden="true">{userName.charAt(0).toUpperCase()}</span>
+            )}
+          </summary>
+          <div className="profile-popover">
+            <Link className="profile-action" href="/analytics">Analytics</Link>
+            {signOutAction ? (
+              <form action={signOutAction}>
+                <button className="profile-action profile-sign-out" type="submit">Sign out</button>
+              </form>
+            ) : null}
           </div>
-          <span className="week-plan">
-            {alternateCtWeek ? "Next CT plan" : "Current CT plan"}
-          </span>
-        </div>
-        <div className="week-picker" role="group" aria-label="Choose schedule week">
+        </details>
+
+        <div className="week-switcher" role="group" aria-label="Choose schedule week">
           <button
             className="week-nav-button"
             type="button"
@@ -297,16 +318,7 @@ export function RoutineTracker({ demoMode = false }: { demoMode?: boolean }) {
           >
             ‹
           </button>
-          <select
-            className="week-select"
-            aria-label="Select week"
-            value={selectedWeek}
-            onChange={(event) => setSelectedWeek(Number(event.target.value))}
-          >
-            {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => (
-              <option key={week} value={week}>Week {week}</option>
-            ))}
-          </select>
+          <span className="week-display" aria-live="polite">Week {selectedWeek}</span>
           <button
             className="week-nav-button"
             type="button"
