@@ -22,6 +22,7 @@ function hasStarted(record: AttendanceRecord, cutoffDate: string, cutoffTime: st
 export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }) {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [selectedCurrentWeek, setSelectedCurrentWeek] = useState(1);
+  const [nextWeekStartDate, setNextWeekStartDate] = useState<string | null>(null);
   const [startWeek, setStartWeek] = useState(1);
   const [endWeek, setEndWeek] = useState(1);
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
@@ -36,11 +37,35 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     if (demoMode) {
       setCurrentWeek(TOTAL_WEEKS); setSelectedCurrentWeek(TOTAL_WEEKS); setEndWeek(TOTAL_WEEKS); setSettingsLoaded(true); return;
     }
-    fetch("/api/settings")
-      .then(async (response) => { if (!response.ok) throw new Error("Could not load the saved current week."); return response.json(); })
-      .then((data: { currentWeek: number }) => { setCurrentWeek(data.currentWeek); setSelectedCurrentWeek(data.currentWeek); setEndWeek(data.currentWeek); })
-      .catch((requestError: Error) => setError(requestError.message))
-      .finally(() => setSettingsLoaded(true));
+
+    let active = true;
+    let lastServerWeek: number | null = null;
+    async function loadSettings() {
+      try {
+        const response = await fetch("/api/settings");
+        if (!response.ok) throw new Error("Could not load the saved current week.");
+        const data = (await response.json()) as { currentWeek: number; nextWeekStartDate: string | null };
+        if (!active) return;
+        setCurrentWeek(data.currentWeek);
+        setNextWeekStartDate(data.nextWeekStartDate);
+        if (lastServerWeek === null) {
+          setSelectedCurrentWeek(data.currentWeek);
+          setEndWeek(data.currentWeek);
+        } else {
+          setSelectedCurrentWeek((week) => week === lastServerWeek ? data.currentWeek : week);
+          setEndWeek((week) => week === lastServerWeek ? data.currentWeek : Math.min(week, data.currentWeek));
+        }
+        lastServerWeek = data.currentWeek;
+      } catch (requestError) {
+        if (active) setError(requestError instanceof Error ? requestError.message : "Could not load the saved current week.");
+      } finally {
+        if (active) setSettingsLoaded(true);
+      }
+    }
+
+    loadSettings();
+    const interval = window.setInterval(loadSettings, 60000);
+    return () => { active = false; window.clearInterval(interval); };
   }, [demoMode]);
 
   useEffect(() => {
@@ -69,9 +94,10 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
     try {
       const response = await fetch("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ currentWeek: selectedCurrentWeek }) });
       if (!response.ok) throw new Error("Could not save the current week.");
-      const data = (await response.json()) as { currentWeek: number };
+      const data = (await response.json()) as { currentWeek: number; nextWeekStartDate: string | null };
       setCurrentWeek(data.currentWeek); setEndWeek(data.currentWeek); setStartWeek((week) => Math.min(week, data.currentWeek));
-      setSavedMessage(`Week ${data.currentWeek} saved. Regular attendance now counts from Week 1.`); setRefreshKey((key) => key + 1);
+      setNextWeekStartDate(data.nextWeekStartDate);
+      setSavedMessage(`Week ${data.currentWeek} saved. It will advance automatically next Saturday.`); setRefreshKey((key) => key + 1);
     } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Could not save the current week."); }
     finally { setSaving(false); }
   }
@@ -95,7 +121,11 @@ export function AttendanceAnalytics({ demoMode = false }: { demoMode?: boolean }
           {Array.from({ length: TOTAL_WEEKS }, (_, index) => index + 1).map((week) => <option key={week} value={week}>Week {week}</option>)}
         </select></label>
         <button type="button" disabled={saving} onClick={saveCurrentWeek}>{saving ? "Saving…" : "Save current week"}</button>
-        <small>Regular attendance counts Week 1 through Week {currentWeek}. Classes later than the current Dhaka day and time are excluded.</small>
+        <small>
+          Regular attendance counts Week 1 through Week {currentWeek}. {nextWeekStartDate
+            ? `Week ${currentWeek + 1} starts automatically on ${nextWeekStartDate}.`
+            : "Week 15 is the final semester week."}
+        </small>
       </div>
       {savedMessage ? <p className="analytics-success" role="status">{savedMessage}</p> : null}
       <div className="date-filter">
