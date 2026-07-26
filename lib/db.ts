@@ -1,40 +1,78 @@
-import { createClient } from "@libsql/client";
+import { neon } from "@neondatabase/serverless";
 
-const databaseUrl = process.env.TURSO_DATABASE_URL || "file:/tmp/routine.db";
+type Statement = {
+  sql: string;
+  args?: unknown[];
+};
 
-export const db = createClient({
-  url: databaseUrl,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+function getClient() {
+  const databaseUrl = process.env.DATABASE_URL;
+
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is not configured");
+  }
+
+  return neon(databaseUrl);
+}
+
+function postgresSql(sql: string) {
+  let parameter = 0;
+  return sql.replace(/\?/g, () => `$${++parameter}`);
+}
+
+export const db = {
+  async execute(statement: Statement) {
+    const rows = await getClient().query(
+      postgresSql(statement.sql),
+      statement.args || [],
+    );
+    return { rows };
+  },
+
+  async batch(statements: Statement[], _mode?: "write") {
+    return Promise.all(statements.map((statement) => db.execute(statement)));
+  },
+};
 
 let schemaPromise: Promise<unknown> | null = null;
 
 export function ensureSchema() {
   if (!schemaPromise) {
-    schemaPromise = db.executeMultiple(`
-      CREATE TABLE IF NOT EXISTS attendance (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_email TEXT NOT NULL,
-        attendance_date TEXT NOT NULL,
-        start_time TEXT NOT NULL,
-        end_time TEXT NOT NULL,
-        course_code TEXT NOT NULL,
-        course_name TEXT NOT NULL,
-        session_type TEXT NOT NULL CHECK (session_type IN ('regular', 'ct')),
-        status TEXT NOT NULL DEFAULT 'absent' CHECK (status IN ('present', 'absent')),
-        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE (
-          user_email,
-          attendance_date,
-          start_time,
-          course_code,
-          session_type
-        )
-      );
+    schemaPromise = (async () => {
+      await db.execute({
+        sql: `
+          CREATE TABLE IF NOT EXISTS attendance (
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            user_email TEXT NOT NULL,
+            attendance_date TEXT NOT NULL,
+            start_time TEXT NOT NULL,
+            end_time TEXT NOT NULL,
+            course_code TEXT NOT NULL,
+            course_name TEXT NOT NULL,
+            session_type TEXT NOT NULL CHECK (session_type IN ('regular', 'ct')),
+            status TEXT NOT NULL DEFAULT 'absent' CHECK (status IN ('present', 'absent')),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (
+              user_email,
+              attendance_date,
+              start_time,
+              course_code,
+              session_type
+            )
+          )
+        `,
+      });
 
-      CREATE INDEX IF NOT EXISTS attendance_user_date_idx
-      ON attendance (user_email, attendance_date);
-    `);
+      await db.execute({
+        sql: `
+          CREATE INDEX IF NOT EXISTS attendance_user_date_idx
+          ON attendance (user_email, attendance_date)
+        `,
+      });
+    })().catch((error) => {
+      schemaPromise = null;
+      throw error;
+    });
   }
 
   return schemaPromise;
