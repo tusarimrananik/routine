@@ -6,7 +6,7 @@ A Vercel-ready Next.js version of the 2nd 30 routine with Google OAuth, date-bas
 
 - Next.js 16
 - Auth.js / NextAuth v5 with Google OAuth
-- Turso/libSQL (SQLite-compatible persistent database)
+- Neon serverless Postgres
 - Vercel
 
 ## Local setup
@@ -17,7 +17,7 @@ A Vercel-ready Next.js version of the 2nd 30 routine with Google OAuth, date-bas
 
    `http://localhost:3000/api/auth/callback/google`
 
-4. For local development, keep `TURSO_DATABASE_URL=file:local.db`.
+4. Set `DATABASE_URL` to a Neon Postgres connection string.
 5. Run:
 
    ```bash
@@ -32,17 +32,16 @@ Add these environment variables in the Vercel project:
 - `AUTH_SECRET`
 - `AUTH_GOOGLE_ID`
 - `AUTH_GOOGLE_SECRET`
-- `TURSO_DATABASE_URL`
-- `TURSO_AUTH_TOKEN`
+- `DATABASE_URL`
 
 In Google Cloud Console, add the production callback:
 
 `https://YOUR-VERCEL-DOMAIN/api/auth/callback/google`
 
-Use a Turso database URL in production. A local SQLite file is not durable on Vercel serverless functions.
+Use the pooled Neon Postgres connection URL in production.
 
 The database table and index are created automatically on the first authenticated attendance request.
 
 The app requires Google sign-in before the routine or analytics pages can be used. Until the Auth.js variables are configured, visitors are sent to `/login`, which displays a setup-pending notice. Attendance API requests remain unavailable.
 
-Any Google account with a verified email address can sign in. Attendance records are isolated by the normalized Google email address. Configure Turso before recording real attendance because the `/tmp` database fallback is temporary and non-durable on Vercel.
+Any Google account with a verified email address can sign in. Attendance records are isolated by the normalized Google email address. Attendance is stored durably in Neon Postgres.
