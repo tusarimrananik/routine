@@ -69,6 +69,16 @@ export function ensureSchema() {
           ON attendance (user_email, attendance_date)
         `,
       });
+
+      await db.execute({
+        sql: `
+          CREATE TABLE IF NOT EXISTS user_settings (
+            user_email TEXT PRIMARY KEY,
+            current_week INTEGER NOT NULL DEFAULT 1 CHECK (current_week BETWEEN 1 AND 15),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+          )
+        `,
+      });
     })().catch((error) => {
       schemaPromise = null;
       throw error;
