@@ -265,7 +265,7 @@ export function RoutineTracker({
     return () => {
       cancelled = true;
     };
-  }, [applyDemoRecords, applyResponse, demoMode, range, sessions]);
+  }, [applyDemoRecords, applyResponse, clock, demoMode, range, sessions]);
 
   async function toggleAttendance(session: DatedSession) {
     const key = attendanceKey(toInput(session));

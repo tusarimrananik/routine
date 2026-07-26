@@ -58,6 +58,57 @@ export function getRegularSessionsThroughWeek(currentWeek: number): AttendanceIn
   return sessions;
 }
 
+function getDhakaDate(now = new Date()) {
+  const values: Record<string, string> = {};
+  new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Dhaka",
+  }).formatToParts(now).forEach((part) => {
+    if (part.type !== "literal") values[part.type] = part.value;
+  });
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function addDays(dateKey: string, days: number) {
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+export function getNextSaturdayDate(now = new Date()) {
+  const today = getDhakaDate(now);
+  const date = new Date(`${today}T00:00:00Z`);
+  let daysUntilSaturday = (6 - date.getUTCDay() + 7) % 7;
+  if (daysUntilSaturday === 0) daysUntilSaturday = 7;
+  return addDays(today, daysUntilSaturday);
+}
+
+export function getEffectiveCurrentWeek(
+  storedWeek: number,
+  nextWeekStartDate: string | null,
+  now = new Date(),
+) {
+  if (!nextWeekStartDate || storedWeek >= TOTAL_WEEKS) {
+    return { currentWeek: storedWeek, nextWeekStartDate };
+  }
+
+  const today = new Date(`${getDhakaDate(now)}T00:00:00Z`).getTime();
+  const nextStart = new Date(`${nextWeekStartDate}T00:00:00Z`).getTime();
+  if (today < nextStart) return { currentWeek: storedWeek, nextWeekStartDate };
+
+  const elapsedDays = Math.floor((today - nextStart) / 86_400_000);
+  const elapsedWeekStarts = Math.floor(elapsedDays / 7) + 1;
+  const currentWeek = Math.min(TOTAL_WEEKS, storedWeek + elapsedWeekStarts);
+  return {
+    currentWeek,
+    nextWeekStartDate: currentWeek >= TOTAL_WEEKS
+      ? null
+      : addDays(nextWeekStartDate, elapsedWeekStarts * 7),
+  };
+}
+
 export function getSavedWeekCutoff(currentWeek: number, now = new Date()) {
   const weekday = new Intl.DateTimeFormat("en-US", {
     weekday: "long",

@@ -75,9 +75,14 @@ export function ensureSchema() {
           CREATE TABLE IF NOT EXISTS user_settings (
             user_email TEXT PRIMARY KEY,
             current_week INTEGER NOT NULL DEFAULT 1 CHECK (current_week BETWEEN 1 AND 15),
+            next_week_start_date TEXT,
             updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
           )
         `,
+      });
+
+      await db.execute({
+        sql: "ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS next_week_start_date TEXT",
       });
     })().catch((error) => {
       schemaPromise = null;

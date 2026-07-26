@@ -11,6 +11,7 @@ import {
 } from "@/lib/attendance";
 import { db, ensureSchema } from "@/lib/db";
 import { getSavedWeekCutoff } from "@/lib/semester";
+import { getUserCurrentWeek } from "@/lib/week-settings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,11 +57,7 @@ function toStat(present: number, total: number): AttendanceStat {
 }
 
 async function getAttendanceData(userEmail: string, from: string, to: string) {
-  const settingsResult = await db.execute({
-    sql: "SELECT current_week FROM user_settings WHERE user_email = ?",
-    args: [userEmail],
-  });
-  const currentWeek = Number(settingsResult.rows[0]?.current_week || 1);
+  const { currentWeek } = await getUserCurrentWeek(userEmail);
   const cutoff = getSavedWeekCutoff(currentWeek);
 
   const [recordsResult, summaryResult, subjectResult] = await Promise.all([
