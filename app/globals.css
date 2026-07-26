@@ -125,6 +125,15 @@ thead .current-day-column { background: #d97706; }
 .analytics-header h1 { margin: 0; font-size: 1.45rem; }
 .back-link { padding: 7px 10px; color: #1e3a8a; background: #dbeafe; border-radius: 6px; font-size: .75rem; font-weight: 800; text-decoration: none; }
 .analytics-content { display: flex; flex-direction: column; gap: 12px; }
+.current-week-setting { display: flex; align-items: flex-end; gap: 10px; padding: 12px; color: #e2e8f0; background: #0f172a; border-radius: 10px; }
+.current-week-setting label { display: flex; flex-direction: column; gap: 4px; }
+.current-week-setting label span { color: #94a3b8; font-size: .68rem; font-weight: 800; }
+.current-week-setting select, .current-week-setting button { min-height: 34px; padding: 5px 9px; border: 1px solid #475569; border-radius: 6px; font-size: .76rem; font-weight: 800; }
+.current-week-setting select { color: #0f172a; background: white; }
+.current-week-setting button { color: white; background: #2563eb; cursor: pointer; }
+.current-week-setting button:disabled { opacity: .65; cursor: wait; }
+.current-week-setting small { margin-left: auto; padding-bottom: 7px; color: #cbd5e1; font-size: .66rem; }
+.analytics-success { margin: 0; padding: 9px 11px; color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 7px; font-size: .75rem; font-weight: 700; }
 .date-filter { display: flex; align-items: flex-end; gap: 10px; padding: 12px; background: white; border: 1px solid var(--border); border-radius: 10px; }
 .date-filter label { display: flex; flex-direction: column; gap: 4px; }
 .date-filter label span { color: var(--muted); font-size: .68rem; font-weight: 800; }
@@ -181,6 +190,10 @@ thead .current-day-column { background: #d97706; }
   .analytics-page { padding: 10px; }
   .analytics-header { margin-bottom: 10px; }
   .analytics-header h1 { font-size: 1.15rem; }
+  .current-week-setting { flex-wrap: wrap; gap: 7px; padding: 9px; }
+  .current-week-setting label { flex: 1 1 150px; }
+  .current-week-setting select, .current-week-setting button { width: 100%; }
+  .current-week-setting small { width: 100%; margin: 0; padding: 0; }
   .date-filter { flex-wrap: wrap; gap: 7px; padding: 9px; }
   .date-filter label { flex: 1 1 125px; }
   .date-filter input, .date-filter select { width: 100%; }

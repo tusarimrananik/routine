@@ -10,6 +10,7 @@ import {
   SubjectAttendance,
 } from "@/lib/attendance";
 import { db, ensureSchema } from "@/lib/db";
+import { getSavedWeekCutoff } from "@/lib/semester";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,29 +47,6 @@ function isValidSession(value: unknown): value is AttendanceInput {
   );
 }
 
-function getDhakaNow() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    timeZone: "Asia/Dhaka",
-  }).formatToParts(new Date());
-
-  const values: Record<string, string> = {};
-
-  for (const part of parts) {
-    if (part.type !== "literal") values[part.type] = part.value;
-  }
-
-  return {
-    date: `${values.year}-${values.month}-${values.day}`,
-    time: `${values.hour}:${values.minute}`,
-  };
-}
-
 function toStat(present: number, total: number): AttendanceStat {
   return {
     present,
@@ -78,6 +56,13 @@ function toStat(present: number, total: number): AttendanceStat {
 }
 
 async function getAttendanceData(userEmail: string, from: string, to: string) {
+  const settingsResult = await db.execute({
+    sql: "SELECT current_week FROM user_settings WHERE user_email = ?",
+    args: [userEmail],
+  });
+  const currentWeek = Number(settingsResult.rows[0]?.current_week || 1);
+  const cutoff = getSavedWeekCutoff(currentWeek);
+
   const [recordsResult, summaryResult, subjectResult] = await Promise.all([
     db.execute({
       sql: `
@@ -96,45 +81,53 @@ async function getAttendanceData(userEmail: string, from: string, to: string) {
       `,
       args: [userEmail, from, to],
     }),
-    (() => {
-      const now = getDhakaNow();
-      return db.execute({
-        sql: `
-          SELECT
-            session_type,
-            COUNT(*) AS total,
-            SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS present
-          FROM attendance
-          WHERE user_email = ?
-            AND (
-              attendance_date < ?
-              OR (attendance_date = ? AND start_time <= ?)
-            )
-          GROUP BY session_type
-        `,
-        args: [userEmail, now.date, now.date, now.time],
-      });
-    })(),
-    (() => {
-      const now = getDhakaNow();
-      return db.execute({
-        sql: `
-          SELECT
-            course_code,
-            COUNT(*) AS total,
-            SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS present
-          FROM attendance
-          WHERE user_email = ?
-            AND session_type = 'regular'
-            AND (
-              attendance_date < ?
-              OR (attendance_date = ? AND start_time <= ?)
-            )
-          GROUP BY course_code
-        `,
-        args: [userEmail, now.date, now.date, now.time],
-      });
-    })(),
+    db.execute({
+      sql: `
+        SELECT
+          session_type,
+          COUNT(*) AS total,
+          SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS present
+        FROM attendance
+        WHERE user_email = ?
+          AND attendance_date >= ?
+          AND (
+            attendance_date < ?
+            OR (attendance_date = ? AND start_time <= ?)
+          )
+        GROUP BY session_type
+      `,
+      args: [
+        userEmail,
+        cutoff.fromDate,
+        cutoff.cutoffDate,
+        cutoff.cutoffDate,
+        cutoff.cutoffTime,
+      ],
+    }),
+    db.execute({
+      sql: `
+        SELECT
+          course_code,
+          COUNT(*) AS total,
+          SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) AS present
+        FROM attendance
+        WHERE user_email = ?
+          AND session_type = 'regular'
+          AND attendance_date >= ?
+          AND (
+            attendance_date < ?
+            OR (attendance_date = ? AND start_time <= ?)
+          )
+        GROUP BY course_code
+      `,
+      args: [
+        userEmail,
+        cutoff.fromDate,
+        cutoff.cutoffDate,
+        cutoff.cutoffDate,
+        cutoff.cutoffTime,
+      ],
+    }),
   ]);
 
   const records: AttendanceRecord[] = recordsResult.rows.map((row) => ({
@@ -175,7 +168,14 @@ async function getAttendanceData(userEmail: string, from: string, to: string) {
     subjectAttendance[String(row.course_code)] = toStat(present, total);
   }
 
-  return { records, summary, subjectAttendance };
+  return {
+    records,
+    summary,
+    subjectAttendance,
+    currentWeek,
+    cutoffDate: cutoff.cutoffDate,
+    cutoffTime: cutoff.cutoffTime,
+  };
 }
 
 export async function GET(request: NextRequest) {
