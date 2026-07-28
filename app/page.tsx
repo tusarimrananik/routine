@@ -40,6 +40,20 @@ export default async function HomePage() {
         userName={user.name}
         signOutAction={signOutAction}
       />
+      <aside className="related-project" aria-label="Related RUET tool">
+        <div>
+          <span className="related-project-label">RUET student tool</span>
+          <strong>Need to prepare a lab report?</strong>
+          <p>Create a structured report and export it as PDF.</p>
+        </div>
+        <a
+          href="https://github.com/tusarimrananik/ruet-lab-report-generator"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open Lab Report Generator ↗
+        </a>
+      </aside>
     </main>
   );
 }
