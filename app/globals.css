@@ -29,6 +29,26 @@ button, input, select { font: inherit; }
   margin: 0 auto;
 }
 
+.related-project {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 12px 0 20px;
+  padding: 12px 14px;
+  color: #e2e8f0;
+  background: #172033;
+  border: 1px solid #26344d;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+}
+.related-project-label { display: block; margin-bottom: 2px; color: #93c5fd; font-size: .62rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+.related-project strong { display: block; color: #f8fafc; font-size: .84rem; }
+.related-project p { margin: 3px 0 0; color: #94a3b8; font-size: .7rem; }
+.related-project a { flex: 0 0 auto; padding: 8px 10px; color: #172033; background: #93c5fd; border-radius: 6px; font-size: .7rem; font-weight: 900; text-decoration: none; white-space: nowrap; }
+.related-project a:hover { background: #bfdbfe; }
+.related-project a:focus-visible { outline: 2px solid #f8fafc; outline-offset: 2px; }
+
 .schedule-container {
   position: relative;
   width: 100%;
@@ -165,6 +185,8 @@ thead .current-day-column { background: #d97706; }
 @media (max-width: 879px) {
   body { padding: 0; }
   .app-shell { max-width: none; }
+  .related-project { align-items: flex-start; flex-direction: column; gap: 9px; margin: 8px 5px 14px; }
+  .related-project a { width: 100%; text-align: center; }
   .schedule-container { min-width: 0; border-radius: 0; }
   .tracker-toolbar { min-height: 30px; padding: 3px 5px; }
   .profile-menu summary { width: 24px; height: 24px; }
