@@ -47,7 +47,7 @@ export default async function HomePage() {
           <p>Create a structured report and export it as PDF.</p>
         </div>
         <a
-          href="https://github.com/tusarimrananik/ruet-lab-report-generator"
+          href="https://ruet-lab-report-generator.vercel.app"
           target="_blank"
           rel="noreferrer"
         >
