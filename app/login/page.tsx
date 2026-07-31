@@ -2,15 +2,25 @@ import { redirect } from "next/navigation";
 
 import { auth, authConfigured, signIn } from "@/auth";
 import { getLoginRouteRedirect } from "@/lib/auth-policy";
+import { getSafeCallbackUrl } from "@/lib/sso-policy";
 
-export default async function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{ callbackUrl?: string | string[] }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+  const requestedCallback = Array.isArray(params.callbackUrl)
+    ? params.callbackUrl[0]
+    : params.callbackUrl;
+  const callbackUrl = getSafeCallbackUrl(requestedCallback);
   const session = authConfigured ? await auth() : null;
   const destination = getLoginRouteRedirect({
     authConfigured,
     email: session?.user?.email,
   });
 
-  if (destination) redirect(destination);
+  if (destination) redirect(callbackUrl);
 
   return (
     <main className="login-page">
@@ -26,7 +36,7 @@ export default async function LoginPage() {
           <form
             action={async () => {
               "use server";
-              await signIn("google", { redirectTo: "/" });
+              await signIn("google", { redirectTo: callbackUrl });
             }}
           >
             <button className="google-button" type="submit">
